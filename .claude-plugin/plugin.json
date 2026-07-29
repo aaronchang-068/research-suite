@@ -1,0 +1,9 @@
+{
+  "name": "research-suite",
+  "description": "文獻探勘 → 研究整理 → 文件產出 一站式套件（scout / literature / scribe / obsidian-markdown / pxa-standards）",
+  "version": "1.0.0",
+  "author": {
+    "name": "Aaron Chang",
+    "email": "aaron.chang@dragonflyuas.com.tw"
+  }
+}

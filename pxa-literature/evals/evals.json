@@ -1,0 +1,17 @@
+{
+  "skill_name": "literature",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "你是航太結構團隊的研究助理。專案根目錄是 <PROJECT_ROOT>，其中 source/Paper/ 有兩篇 PDF：grant1992.pdf（C. Grant 1992, Shear Centre of Thin-Walled Sections）與 Chauhan2018b.pdf（Chauhan & Martins 2018, 以 OpenAeroStruct 做低保真 wingbox 氣動結構最佳化）。研究主題：「薄壁截面剪力傳遞與 wingbox 初步尺寸」。請將這些文獻逐篇閱讀後，整理成 Obsidian 知識庫。使用者目前不在線上：所有需要確認之處請做合理假設並記錄，不要停下等待回覆。",
+      "expected_output": "在專案根目錄產生 obsidian/ vault：每篇 PDF 一則 source note（重點摘錄帶頁碼錨點）、數則原子筆記（一概念一則、互有 wikilink）、一則 MOC 收錄全部筆記；結構驗證通過（無斷鏈、無孤兒）；公式轉寫正確（特別是 dq/ds 符號）。",
+      "files": ["source/Paper/grant1992.pdf", "source/Paper/Chauhan2018b.pdf"]
+    },
+    {
+      "id": 1,
+      "prompt": "專案根目錄是 <PROJECT_ROOT>，已有完成的 Obsidian vault（obsidian/，內含 MOCs/、sources/、notes/）。請以 MOC「基於空氣動力條件的結構佈局規劃-MOC」為大綱，開始產出工程文件草稿到 documents/：本次僅試寫前三章（氣動載荷、氣動-結構耦合、結構理想化與建模），繁體中文、技術術語保留英文，重要陳述保留來源標註。使用者目前不在線上：所有需要確認之處請做合理假設並記錄，不要停下等待回覆。",
+      "expected_output": "documents/ 內產生 .md 工程文件草稿：章節結構對應 MOC 前三章、內容為連貫敘事而非筆記堆疊、重要陳述帶（作者 年份, 頁碼）標註、文末參考文獻對應 source notes。",
+      "files": ["obsidian/ (完整 vault)"]
+    }
+  ]
+}

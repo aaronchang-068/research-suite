@@ -1,0 +1,25 @@
+{
+  "name": "skills-for-claude-code",
+  "owner": {
+    "name": "Aaron Chang",
+    "email": "aaron.chang@dragonflyuas.com.tw"
+  },
+  "description": "品翔航太 CTO 幕僚 — 文獻研究與標準寫作 skill 套件",
+  "version": "1.0.0",
+  "plugins": [
+    {
+      "name": "research-suite",
+      "source": ".",
+      "description": "文獻探勘 → 研究整理 → 文件產出 一站式套件（pxa-scout / pxa-literature / pxa-scribe / pxa-obsidian-markdown / pxa-standards）",
+      "version": "1.0.0",
+      "author": { "name": "Aaron Chang" },
+      "skills": [
+        "./pxa-scout",
+        "./pxa-literature",
+        "./pxa-scribe",
+        "./pxa-obsidian-markdown",
+        "./pxa-standards"
+      ]
+    }
+  ]
+}

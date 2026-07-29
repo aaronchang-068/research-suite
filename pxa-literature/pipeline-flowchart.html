@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>literature skill × Obsidian — 專業知識資料庫 Pipeline</title>
+<style>
+  :root{
+    --ice:#d4e4f7; --steel:#4a6fa5; --silver:#c0c0c0; --white:#fafafa;
+    --ink:#22334d; --muted:#5d7290; --line:#b9cde6;
+    --steel-dark:#3a5a89; --ice-soft:#e9f1fa;
+    --gate:#a8642f; --gate-bg:#fbeee2;
+    --stop:#b34040; --stop-bg:#fdecec;
+    --ok:#2f7d4f; --ok-bg:#e9f4ed;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:linear-gradient(180deg,#eef4fb 0%,var(--white) 40%);
+       font-family:"Noto Sans TC","Microsoft JhengHei","DejaVu Sans",-apple-system,sans-serif;
+       color:var(--ink);padding:34px 38px 30px;min-width:1560px}
+
+  /* ---------- header ---------- */
+  header{display:flex;align-items:baseline;gap:16px;margin-bottom:6px}
+  h1{font-size:24px;font-weight:700;letter-spacing:.5px}
+  .beta{font-size:12px;color:var(--steel);border:1px solid var(--steel);border-radius:20px;padding:2px 10px}
+  .subtitle{color:var(--muted);font-size:13.5px;margin-bottom:26px}
+
+  /* ---------- pipeline row ---------- */
+  .pipe{display:grid;grid-template-columns:215px 44px 330px 44px 260px 44px 285px 44px 305px;
+        align-items:stretch}
+
+  .col{background:#fff;border:1px solid var(--line);border-radius:14px;
+       box-shadow:0 6px 18px rgba(74,111,165,.10);display:flex;flex-direction:column;overflow:hidden}
+  .col-head{padding:11px 14px;font-weight:700;font-size:14.5px;color:#fff;
+            background:linear-gradient(135deg,var(--steel),var(--steel-dark));
+            display:flex;align-items:center;gap:8px}
+  .col-head .stage{background:rgba(250,250,250,.22);border-radius:6px;font-size:11px;
+                   padding:2px 7px;font-weight:600;white-space:nowrap}
+  .col-body{padding:12px;display:flex;flex-direction:column;gap:9px;flex:1}
+
+  .node{background:var(--ice-soft);border:1px solid var(--line);border-left:4px solid var(--steel);
+        border-radius:9px;padding:8px 11px;font-size:12.5px;line-height:1.5}
+  .node b{font-size:13px}
+  .node small{color:var(--muted);display:block;font-size:11.5px;line-height:1.45;margin-top:1px}
+  .down{align-self:center;color:var(--silver);font-size:13px;line-height:1;margin:-3px 0}
+
+  .gate{background:var(--gate-bg);border:1.5px dashed var(--gate);border-left:4px solid var(--gate);
+        border-radius:9px;padding:8px 11px;font-size:12.5px;color:#7a4a20;line-height:1.5}
+  .loop{align-self:center;font-size:11px;color:var(--gate);background:var(--gate-bg);
+        border-radius:20px;padding:2px 10px}
+  .ok{background:var(--ok-bg);border-color:#bfdccb;border-left-color:var(--ok)}
+  .stop{background:var(--stop-bg);border:1px solid #e5baba;border-left:4px solid var(--stop);
+        border-radius:9px;padding:8px 11px;font-size:12.5px;color:#7a2626;line-height:1.5}
+
+  /* wikilink cluster */
+  .wiki{position:relative;display:flex;flex-direction:column;gap:9px}
+  .wiki::before{content:"";position:absolute;left:50%;top:14px;bottom:14px;width:0;
+                border-left:1.5px dashed var(--silver)}
+  .wiki .node{position:relative;background:#fff8ea;border-color:#e3d2a8;border-left-color:#c9a227}
+  .wikitag{align-self:center;font-size:10.5px;color:#9a7d1f;background:#fff3d6;
+           border-radius:20px;padding:1px 9px;position:relative}
+
+  /* downstream */
+  .ds .node{border-left-color:var(--ok);background:var(--ok-bg)}
+  .ds .node b{color:#215c3a}
+
+  /* ---------- arrows between columns ---------- */
+  .arrow{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:0 2px}
+  .arrow svg{overflow:visible}
+  .alabel{writing-mode:vertical-rl;text-orientation:upright;font-size:10.5px;color:var(--steel);
+          letter-spacing:2px;background:var(--ice);border-radius:8px;padding:8px 3px;line-height:1.1}
+  .alabel.warn{color:var(--gate);background:var(--gate-bg)}
+  .alabel.stopc{color:var(--stop);background:var(--stop-bg)}
+
+  /* ---------- traceability band ---------- */
+  .trace{margin-top:26px;background:linear-gradient(135deg,#3a5a89,#22334d);
+         border-radius:14px;padding:15px 22px;display:flex;align-items:center;gap:14px;
+         box-shadow:0 6px 18px rgba(34,51,77,.25)}
+  .trace .t-title{color:var(--ice);font-weight:700;font-size:14px;white-space:nowrap}
+  .trace .t-title small{display:block;font-weight:400;font-size:11px;color:#9db6d8;letter-spacing:.5px}
+  .chain{display:flex;align-items:center;gap:0;flex:1;justify-content:space-evenly}
+  .chip{background:rgba(250,250,250,.10);border:1px solid rgba(212,228,247,.35);color:var(--white);
+        border-radius:9px;padding:7px 14px;font-size:12.5px;text-align:center;line-height:1.4}
+  .chip small{display:block;font-size:10.5px;color:#9db6d8}
+  .chev{color:#7f9cc4;font-size:16px;padding:0 8px}
+
+  footer{margin-top:12px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>literature skill × Obsidian｜專業知識資料庫 Pipeline</h1>
+  <span class="beta">SBE 團隊 SOP</span>
+</header>
+<div class="subtitle">從原始文獻到可追溯的工程知識庫，再到下游 App／程式碼——每一條公式都能追溯回原文頁碼</div>
+
+<div class="pipe">
+
+  <!-- ① source -->
+  <div class="col">
+    <div class="col-head"><span class="stage">輸入</span>source/</div>
+    <div class="col-body">
+      <div class="node"><b>Paper</b><small>期刊・會議論文</small></div>
+      <div class="node"><b>Textbooks</b><small>教科書精選章節</small></div>
+      <div class="node"><b>Lecture Notes</b><small>課程講義</small></div>
+      <div class="node"><b>Web Resources</b><small>官方技術文件</small></div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#4a6fa5" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel">逐篇閱讀</div>
+  </div>
+
+  <!-- ② stage 1 -->
+  <div class="col">
+    <div class="col-head"><span class="stage">階段一</span>literature skill</div>
+    <div class="col-body">
+      <div class="node"><b>盤點與差異比對</b><small>已有筆記不重做</small></div>
+      <div class="down">▼</div>
+      <div class="node"><b>source note</b> 文獻筆記<small>每篇一則・重點摘錄帶頁碼／式號錨點</small></div>
+      <div class="down">▼</div>
+      <div class="node"><b>atomic note</b> 原子筆記<small>一概念一則・文獻回顧口吻<br>符號表＋公式強制分離（$$＋tag 編號）</small></div>
+      <div class="down">▼</div>
+      <div class="node"><b>MOC</b> 主題索引<small>理論脈絡串接＝階段二文件大綱</small></div>
+      <div class="down">▼</div>
+      <div class="gate"><b>QA Gate</b><small style="color:#9a6a3f">check_vault.py 結構驗證＋內容抽驗對照 PDF 原文</small></div>
+      <div class="loop">↺ 發現錯誤 → 修正後重驗</div>
+      <div class="node ok"><b>status 品質流</b><small>draft → reviewed → <b>stable</b>（經原文核驗）</small></div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#4a6fa5" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel">QA通過</div>
+  </div>
+
+  <!-- ③ vault -->
+  <div class="col">
+    <div class="col-head"><span class="stage">知識庫</span>obsidian/（Obsidian）</div>
+    <div class="col-body">
+      <div class="wiki">
+        <div class="node"><b>sources/</b><small>37+ 文獻筆記・書目與頁碼錨點</small></div>
+        <div class="wikitag">wikilink</div>
+        <div class="node"><b>notes/</b><small>82+ 原子筆記・平均出鏈 5.6</small></div>
+        <div class="wikitag">wikilink</div>
+        <div class="node"><b>MOCs/</b><small>主題地圖・全筆記 100% 收錄</small></div>
+      </div>
+      <div class="node" style="margin-top:auto"><b>單一事實來源</b><small>無斷鏈・無孤兒・全可追溯</small></div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#a8642f" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel warn">✋確認</div>
+  </div>
+
+  <!-- ④ stage 2 -->
+  <div class="col">
+    <div class="col-head"><span class="stage">階段二</span>documents/</div>
+    <div class="col-body">
+      <div class="node"><b>MOC 作大綱</b><small>doc-coauthoring 共筆迭代</small></div>
+      <div class="down">▼</div>
+      <div class="node"><b>主題.md</b> 開發稿<small>連貫敘事・來源標註（作者 年份, 頁碼）</small></div>
+      <div class="down">▼</div>
+      <div class="node"><b>.docx／.pdf</b> 交付<small>docx＝簽核追蹤・pdf＝唯讀</small></div>
+      <div class="down">▼</div>
+      <div class="stop"><b>🛑 skill 停止點</b><small style="color:#a05555">工程師介入：判讀哪些資料有用、決定後續</small></div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#2f7d4f" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel stopc">判讀後</div>
+  </div>
+
+  <!-- ⑤ downstream -->
+  <div class="col ds">
+    <div class="col-head" style="background:linear-gradient(135deg,#2f7d4f,#215c3a)"><span class="stage">下游</span>依知識庫產出</div>
+    <div class="col-body">
+      <div class="node"><b>HTML App</b><small>概念說明・互動圖解<br>依據：MOC 脈絡＋原子筆記圖文</small></div>
+      <div class="node"><b>Python／EXE</b><small>數值計算・參數化工具<br>依據：演算法程序節＋數學形式編號公式</small></div>
+      <div class="node"><b>C／C++ Code</b><small>飛控・嵌入式實作<br>依據：僅取 <b>stable</b> 級公式與符號表</small></div>
+      <div class="node" style="border-left-color:#c9a227;background:#fff8ea"><small style="margin-top:0">程式 docstring／註解引用「筆記名＋式號」<br>如 <b>Eq.(3), Trim Correction Algorithm</b></small></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- traceability band -->
+<div class="trace">
+  <div class="t-title">🔗 Requirement<br>Traceability<small>需求追溯鏈（雙向）</small></div>
+  <div class="chain">
+    <div class="chip"><b>程式碼</b><small>註解：筆記名＋式號</small></div>
+    <span class="chev">⇄</span>
+    <div class="chip"><b>atomic note</b><small>數學形式 Eq.(n)・符號表</small></div>
+    <span class="chev">⇄</span>
+    <div class="chip"><b>source note</b><small>重點摘錄・頁碼錨點</small></div>
+    <span class="chev">⇄</span>
+    <div class="chip"><b>原始文獻</b><small>PDF 頁碼／原文式號</small></div>
+  </div>
+</div>
+
+<footer>
+  <span>literature skill v2｜QA gate：結構驗證（check_vault.py）＋內容抽驗（PDF 原文逐式核對）</span>
+  <span>Dragonfly UAS・SBE</span>
+</footer>
+
+</body>
+</html>

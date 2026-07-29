@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>scribe skill — vault 到 PXA SP 技術報告 Pipeline</title>
+<style>
+  :root{
+    --ice:#d4e4f7; --steel:#4a6fa5; --silver:#c0c0c0; --white:#fafafa;
+    --ink:#22334d; --muted:#5d7290; --line:#b9cde6;
+    --steel-dark:#3a5a89; --ice-soft:#e9f1fa;
+    --gate:#a8642f; --gate-bg:#fbeee2;
+    --stop:#b34040; --stop-bg:#fdecec;
+    --ok:#2f7d4f; --ok-bg:#e9f4ed;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:linear-gradient(180deg,#eef4fb 0%,var(--white) 40%);
+       font-family:"Noto Sans TC","Microsoft JhengHei","DejaVu Sans",-apple-system,sans-serif;
+       color:var(--ink);padding:34px 38px 30px;min-width:1560px}
+
+  header{display:flex;align-items:baseline;gap:16px;margin-bottom:6px}
+  h1{font-size:24px;font-weight:700;letter-spacing:.5px}
+  .beta{font-size:12px;color:var(--steel);border:1px solid var(--steel);border-radius:20px;padding:2px 10px}
+  .subtitle{color:var(--muted);font-size:13.5px;margin-bottom:26px}
+
+  .pipe{display:grid;grid-template-columns:265px 44px 250px 44px 330px 44px 275px 44px 275px;
+        align-items:stretch}
+
+  .col{background:#fff;border:1px solid var(--line);border-radius:14px;
+       box-shadow:0 6px 18px rgba(74,111,165,.10);display:flex;flex-direction:column;overflow:hidden}
+  .col-head{padding:11px 14px;font-weight:700;font-size:14.5px;color:#fff;
+            background:linear-gradient(135deg,var(--steel),var(--steel-dark));
+            display:flex;align-items:center;gap:8px}
+  .col-head .stage{background:rgba(250,250,250,.22);border-radius:6px;font-size:11px;
+                   padding:2px 7px;font-weight:600;white-space:nowrap}
+  .col-body{padding:12px;display:flex;flex-direction:column;gap:9px;flex:1}
+
+  .node{background:var(--ice-soft);border:1px solid var(--line);border-left:4px solid var(--steel);
+        border-radius:9px;padding:8px 11px;font-size:12.5px;line-height:1.5}
+  .node b{font-size:13px}
+  .node small{color:var(--muted);display:block;font-size:11.5px;line-height:1.45;margin-top:1px}
+  .down{align-self:center;color:var(--silver);font-size:13px;line-height:1;margin:-3px 0}
+
+  .gate{background:var(--gate-bg);border:1.5px dashed var(--gate);border-left:4px solid var(--gate);
+        border-radius:9px;padding:8px 11px;font-size:12.5px;color:#7a4a20;line-height:1.5}
+  .loop{align-self:center;font-size:11px;color:var(--gate);background:var(--gate-bg);
+        border-radius:20px;padding:2px 10px}
+  .ok{background:var(--ok-bg);border-color:#bfdccb;border-left-color:var(--ok)}
+  .stop{background:var(--stop-bg);border:1px solid #e5baba;border-left:4px solid var(--stop);
+        border-radius:9px;padding:8px 11px;font-size:12.5px;color:#7a2626;line-height:1.5}
+
+  .rule .node{background:#fff8ea;border-color:#e3d2a8;border-left-color:#c9a227}
+
+  .arrow{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:0 2px}
+  .arrow svg{overflow:visible}
+  .alabel{writing-mode:vertical-rl;text-orientation:upright;font-size:10.5px;color:var(--steel);
+          letter-spacing:2px;background:var(--ice);border-radius:8px;padding:8px 3px;line-height:1.1}
+  .alabel.warn{color:var(--gate);background:var(--gate-bg)}
+  .alabel.stopc{color:var(--stop);background:var(--stop-bg)}
+
+  .trace{margin-top:26px;background:linear-gradient(135deg,#3a5a89,#22334d);
+         border-radius:14px;padding:15px 22px;display:flex;align-items:center;gap:14px;
+         box-shadow:0 6px 18px rgba(34,51,77,.25)}
+  .trace .t-title{color:var(--ice);font-weight:700;font-size:14px;white-space:nowrap}
+  .trace .t-title small{display:block;font-weight:400;font-size:11px;color:#9db6d8;letter-spacing:.5px}
+  .chain{display:flex;align-items:center;gap:0;flex:1;justify-content:space-evenly}
+  .chip{background:rgba(250,250,250,.10);border:1px solid rgba(212,228,247,.35);color:var(--white);
+        border-radius:9px;padding:7px 14px;font-size:12.5px;text-align:center;line-height:1.4}
+  .chip small{display:block;font-size:10.5px;color:#9db6d8}
+  .chev{color:#7f9cc4;font-size:16px;padding:0 8px}
+
+  footer{margin-top:12px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>scribe skill｜vault → PXA SP 技術報告 Pipeline</h1>
+  <span class="beta">SBE 團隊 SOP・階段二</span>
+</header>
+<div class="subtitle">把已驗證的 Obsidian 知識庫轉寫為合規的 PXA-{TOPIC}-SP 研究報告（NASA CR 風格）——每條結論 [C-n] 都能追溯回原文頁碼</div>
+
+<div class="pipe">
+
+  <!-- ① inputs -->
+  <div class="col rule">
+    <div class="col-head"><span class="stage">輸入</span>vault＋規則 SSoT</div>
+    <div class="col-body">
+      <div class="node" style="background:var(--ice-soft);border-color:var(--line);border-left-color:var(--steel)"><b>obsidian/</b> 知識庫<small>sources／notes／MOCs<br>status：stable=逐式核驗 ✓・reviewed=⚠</small></div>
+      <div class="node" style="background:var(--ice-soft);border-color:var(--line);border-left-color:var(--steel)"><b>SP-series-map.md</b><small>議題切分（單一議題原則）・素材筆記清單・優先序・裁定紀錄</small></div>
+      <div class="node"><b>pxa-standards skill</b>（規則 SSoT）<small>STD-SP-001/002/003 正本＋writing-examples<br>＋合規腳本 check_sp.py（CLU 系列已退役）</small></div>
+      <div class="node"><b>source/</b> 原始 PDF<small>附錄 E 逐字摘錄的唯一依據</small></div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#4a6fa5" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel">前置檢查</div>
+  </div>
+
+  <!-- ② initiation -->
+  <div class="col">
+    <div class="col-head"><span class="stage">立案</span>報告規劃</div>
+    <div class="col-body">
+      <div class="node"><b>vault QA 重驗</b><small>check_vault.py 全過・素材 status 盤點・L2 計數（協調制）</small></div>
+      <div class="down">▼</div>
+      <div class="node"><b>STRN 配發</b><small>PXA-STRUCT-SP-{YYYY}-{NNN}<br>+v1-0+DRAFT・Quick／Update 模式</small></div>
+      <div class="down">▼</div>
+      <div class="node"><b>§4.x 主題×筆記對應表</b><small>Part 4 每個推導主題用哪幾則筆記</small></div>
+      <div class="down">▼</div>
+      <div class="gate"><b>✋ 使用者核准立案</b><small style="color:#9a6a3f">核准前不動筆</small></div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#a8642f" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel warn">核准後</div>
+  </div>
+
+  <!-- ③ writing -->
+  <div class="col">
+    <div class="col-head"><span class="stage">撰寫</span>SP 撰寫順序（STD-SP-002 §3.9）</div>
+    <div class="col-body">
+      <div class="node"><b>§2.3 文獻回顧</b> → <b>Part 3</b><small>L1/L2/L3 標註・公式沿用筆記原文式號・假設 A-n</small></div>
+      <div class="down">▼</div>
+      <div class="node"><b>Part 4</b> 逐 §4.x 推導<small>2–3 段連續敘事・驗證比較（✓/⚠）・[C-n-draft]</small></div>
+      <div class="down">▼</div>
+      <div class="node"><b>Part 5</b> [C-n] 規範性結論<small>★信度＋適用條件＋限制——缺一禁止發行</small></div>
+      <div class="down">▼</div>
+      <div class="node"><b>Part 6 §6.1</b> 結論引用索引 → <b>P2／P1</b> → 前頁<small>P1 最後寫・前頁用 STD-SP-002 §7.2 模板</small></div>
+      <div class="down">▼</div>
+      <div class="node"><b>附錄 A–F</b><small>E＝錨點→PDF <b>逐字摘錄</b>（禁記憶引用）・A＝RTM 追溯</small></div>
+      <div class="loop">✋ 每 Part 完成即停下交使用者審</div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#4a6fa5" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel">全稿完成</div>
+  </div>
+
+  <!-- ④ compliance gate -->
+  <div class="col">
+    <div class="col-head" style="background:linear-gradient(135deg,#a8642f,#7a4a20)"><span class="stage">合規</span>Compliance Gate</div>
+    <div class="col-body">
+      <div class="gate"><b>check_sp.py</b>（確定性檢查）<small style="color:#9a6a3f">Part 1–6 不可變・[C-n] 三要素・公式 $$ 三行格式・page-break 位置・禁止用語・Part 1 淨空・metadata</small></div>
+      <div class="down">▼</div>
+      <div class="gate"><b>STD-SP-002 §8.2 人審清單</b><small style="color:#9a6a3f">腳本管不到的項目逐項回報</small></div>
+      <div class="down">▼</div>
+      <div class="gate"><b>附錄 E 抽驗</b><small style="color:#9a6a3f">≥20% 摘錄回 PDF 逐字比對</small></div>
+      <div class="loop">↺ 違規 → 修正後重驗</div>
+      <div class="node ok"><b>全數通過</b><small>才可交付</small></div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#2f7d4f" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel stopc">交付</div>
+  </div>
+
+  <!-- ⑤ deliver & downstream -->
+  <div class="col">
+    <div class="col-head" style="background:linear-gradient(135deg,#2f7d4f,#215c3a)"><span class="stage">交付</span>Report.md＋下游</div>
+    <div class="col-body">
+      <div class="node ok"><b>Report.md ＋ {STRN}.docx</b><small>md2docx.py＋SP-reference.docx 範本・公式→OMML・式號保留・MD 為 SSoT</small></div>
+      <div class="down">▼</div>
+      <div class="stop"><b>🛑 skill 停止點</b><small style="color:#a05555">後續流程不在本 skill 範圍</small></div>
+      <div class="node"><b>PDF</b><small>需要時由 docx 另存（latexer 規劃取消）</small></div>
+      <div class="node"><b>DAA 審查簽核</b><small>同儕審查 → +BASELINE</small></div>
+      <div class="node"><b>下游引用</b><small>TP／設計報告引用<br><b>[PXA-STRUCT-SP-2026-002, §4.3]</b></small></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- traceability band -->
+<div class="trace">
+  <div class="t-title">🔗 [C-n] 結論<br>追溯鏈<small>單向信任鏈：vault → SP → TP</small></div>
+  <div class="chain">
+    <div class="chip"><b>TP／設計報告</b><small>引用 [STRN, §X.Y]</small></div>
+    <span class="chev">⇄</span>
+    <div class="chip"><b>[C-n] 結論</b><small>P5・★信度＋適用條件</small></div>
+    <span class="chev">⇄</span>
+    <div class="chip"><b>§4.x 推導</b><small>驗證比較 ✓/⚠</small></div>
+    <span class="chev">⇄</span>
+    <div class="chip"><b>atomic／source note</b><small>數學形式・頁碼錨點</small></div>
+    <span class="chev">⇄</span>
+    <div class="chip"><b>原始文獻</b><small>附錄 E 逐字摘錄</small></div>
+  </div>
+</div>
+
+<footer>
+  <span>scribe skill v1.1｜規則 SSoT：pxa-standards skill（STD 正本）｜合規 gate：check_sp.py＋§16.2 自檢＋附錄 E 抽驗</span>
+  <span>Dragonfly UAS・SBE</span>
+</footer>
+
+</body>
+</html>

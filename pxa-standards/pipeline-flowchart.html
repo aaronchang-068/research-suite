@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pxa-standards skill — PXA 標準體系規則 SSoT 架構</title>
+<style>
+  :root{
+    --ice:#d4e4f7; --steel:#4a6fa5; --silver:#c0c0c0; --white:#fafafa;
+    --ink:#22334d; --muted:#5d7290; --line:#b9cde6;
+    --steel-dark:#3a5a89; --ice-soft:#e9f1fa;
+    --gate:#a8642f; --gate-bg:#fbeee2;
+    --stop:#b34040; --stop-bg:#fdecec;
+    --ok:#2f7d4f; --ok-bg:#e9f4ed;
+    --gold:#c9a227; --gold-bg:#fff8ea;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:linear-gradient(180deg,#eef4fb 0%,var(--white) 40%);
+       font-family:"Noto Sans TC","Microsoft JhengHei","DejaVu Sans",-apple-system,sans-serif;
+       color:var(--ink);padding:34px 38px 30px;min-width:1560px}
+
+  header{display:flex;align-items:baseline;gap:16px;margin-bottom:6px}
+  h1{font-size:24px;font-weight:700;letter-spacing:.5px}
+  .beta{font-size:12px;color:var(--steel);border:1px solid var(--steel);border-radius:20px;padding:2px 10px}
+  .subtitle{color:var(--muted);font-size:13.5px;margin-bottom:26px}
+
+  .pipe{display:grid;grid-template-columns:290px 44px 340px 44px 300px 44px 330px;
+        align-items:stretch}
+
+  .col{background:#fff;border:1px solid var(--line);border-radius:14px;
+       box-shadow:0 6px 18px rgba(74,111,165,.10);display:flex;flex-direction:column;overflow:hidden}
+  .col-head{padding:11px 14px;font-weight:700;font-size:14.5px;color:#fff;
+            background:linear-gradient(135deg,var(--steel),var(--steel-dark));
+            display:flex;align-items:center;gap:8px}
+  .col-head .stage{background:rgba(250,250,250,.22);border-radius:6px;font-size:11px;
+                   padding:2px 7px;font-weight:600;white-space:nowrap}
+  .col-body{padding:12px;display:flex;flex-direction:column;gap:9px;flex:1}
+
+  .node{background:var(--ice-soft);border:1px solid var(--line);border-left:4px solid var(--steel);
+        border-radius:9px;padding:8px 11px;font-size:12.5px;line-height:1.5}
+  .node b{font-size:13px}
+  .node small{color:var(--muted);display:block;font-size:11.5px;line-height:1.45;margin-top:1px}
+  .down{align-self:center;color:var(--silver);font-size:13px;line-height:1;margin:-3px 0}
+
+  .rule{background:var(--gold-bg);border:1px solid #e3d2a8;border-left:4px solid var(--gold);
+        border-radius:9px;padding:8px 11px;font-size:12.5px;line-height:1.5}
+  .rule b{font-size:13px}
+  .rule small{color:#8a7327;display:block;font-size:11.5px;line-height:1.45;margin-top:1px}
+
+  .gate{background:var(--gate-bg);border:1.5px dashed var(--gate);border-left:4px solid var(--gate);
+        border-radius:9px;padding:8px 11px;font-size:12.5px;color:#7a4a20;line-height:1.5}
+  .ok{background:var(--ok-bg);border-color:#bfdccb;border-left-color:var(--ok)}
+  .retire{background:var(--stop-bg);border:1px solid #e5baba;border-left:4px solid var(--stop);
+        border-radius:9px;padding:8px 11px;font-size:12.5px;color:#7a2626;line-height:1.5}
+  .retire small{color:#a05555;display:block;font-size:11.5px;line-height:1.45;margin-top:1px}
+
+  .arrow{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:0 2px}
+  .arrow svg{overflow:visible}
+  .alabel{writing-mode:vertical-rl;text-orientation:upright;font-size:10.5px;color:var(--steel);
+          letter-spacing:2px;background:var(--ice);border-radius:8px;padding:8px 3px;line-height:1.1}
+  .alabel.warn{color:var(--gate);background:var(--gate-bg)}
+
+  .trace{margin-top:26px;background:linear-gradient(135deg,#3a5a89,#22334d);
+         border-radius:14px;padding:15px 22px;display:flex;align-items:center;gap:14px;
+         box-shadow:0 6px 18px rgba(34,51,77,.25)}
+  .trace .t-title{color:var(--ice);font-weight:700;font-size:14px;white-space:nowrap}
+  .trace .t-title small{display:block;font-weight:400;font-size:11px;color:#9db6d8;letter-spacing:.5px}
+  .chain{display:flex;align-items:center;gap:0;flex:1;justify-content:space-evenly}
+  .chip{background:rgba(250,250,250,.10);border:1px solid rgba(212,228,247,.35);color:var(--white);
+        border-radius:9px;padding:7px 14px;font-size:12.5px;text-align:center;line-height:1.4}
+  .chip small{display:block;font-size:10.5px;color:#9db6d8}
+  .chev{color:#7f9cc4;font-size:16px;padding:0 8px}
+
+  footer{margin-top:12px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>pxa-standards skill｜PXA 標準體系規則 SSoT</h1>
+  <span class="beta">SBE 團隊 SOP・規則層</span>
+</header>
+<div class="subtitle">STD 正本收錄於本 skill references/——下游 skill 隨用隨讀、不憑記憶；可機器判定的規則以 check_sp.py 為準（2026-07-18 skill 化，CLU 系列退役）</div>
+
+<div class="pipe">
+
+  <!-- ① upstream sources -->
+  <div class="col">
+    <div class="col-head"><span class="stage">上位</span>國際標準原文</div>
+    <div class="col-body">
+      <div class="node"><b>ANSI/NISO Z39.18-2005</b><small>報告三段式結構・Body Matter 定義</small></div>
+      <div class="node"><b>Z39.14／Z39.23</b><small>摘要四要素・STRN 編號</small></div>
+      <div class="node"><b>NASA SP-2015-7602</b><small>前頁排版・審查檢核項</small></div>
+      <div class="node"><b>AFRL Guide 2018・NF-1676</b><small>排版實務・DAA 參照</small></div>
+      <div class="node ok"><b>skill 內 raw/</b><small>原始 PDF 打包隨行，裁剪聲明見 STD-SP-001 §1.5</small></div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#4a6fa5" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel">裁剪採用</div>
+  </div>
+
+  <!-- ② rules SSoT -->
+  <div class="col">
+    <div class="col-head" style="background:linear-gradient(135deg,#c9a227,#8a7327)"><span class="stage">正本</span>references/（規則 SSoT）</div>
+    <div class="col-body">
+      <div class="rule"><b>PXA-STD-SP-001</b> v3.0<small>治理——分級與信任鏈/STRN/審查/DAA/證據品質（L＋★・vault 證據鏈）/數值/取捨</small></div>
+      <div class="rule"><b>PXA-STD-SP-002</b> v2.0<small>結構與格式——Part 1–6（TM/TP＋SP 分表）・語言格式・Schema・前頁模板・[S]/[H] 檢核</small></div>
+      <div class="node"><b>writing-examples.md</b> v1.0<small>段落模式 N/F/T・句型庫・黃金範例・SP 範例（few-shot，非合規條件）</small></div>
+      <div class="gate"><b>scripts/check_sp.py</b><small style="color:#9a6a3f">合規 gate——機器可判定規則以腳本為準</small></div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#4a6fa5" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel">隨用隨讀</div>
+  </div>
+
+  <!-- ③ downstream skills -->
+  <div class="col">
+    <div class="col-head"><span class="stage">下游</span>執行層 skills</div>
+    <div class="col-body">
+      <div class="node"><b>literature skill</b><small>source/ → obsidian vault<br>QA gate：check_vault.py</small></div>
+      <div class="down">▼</div>
+      <div class="node"><b>scribe skill</b><small>vault → SP Report.md → {STRN}.docx 交付<br>規則隨用隨讀本 skill・gate：check_sp.py</small></div>
+      <div class="down">▼</div>
+      <div class="node"><b>docx 交付管線</b>（scribe 內建）<small>pandoc＋SP-reference.docx・PDF 由 docx 另存（latexer 取消）</small></div>
+      <div class="retire"><b>已退役</b>：CLU-SP-001–004<small>執行職能由 skill 機制承接・歸檔於 documents/reference/archive/</small></div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#a8642f" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel warn">裁定回寫</div>
+  </div>
+
+  <!-- ④ governance -->
+  <div class="col">
+    <div class="col-head" style="background:linear-gradient(135deg,#a8642f,#7a4a20)"><span class="stage">治理</span>修訂與裁定流程</div>
+    <div class="col-body">
+      <div class="gate"><b>① 裁定記入 series-map</b><small style="color:#9a6a3f">documents/SP-series-map.md 裁定紀錄（即時生效）</small></div>
+      <div class="down">▼</div>
+      <div class="gate"><b>② 修訂 STD 正本</b><small style="color:#9a6a3f">版本遞增＋版本紀錄行・CTO 核准（STD-SP-001 §5.1）</small></div>
+      <div class="down">▼</div>
+      <div class="gate"><b>③ 同步</b><small style="color:#9a6a3f">SKILL.md 版本表・前頁工具版本表・scribe 章節引用</small></div>
+      <div class="down">▼</div>
+      <div class="node ok"><b>已回寫裁定（series-map 1–3、6–8）</b><small>L2 協調制・vault→SP 信任鏈・講義 L3・NASA＝L2・skill 化・二文件重構</small></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- rule hierarchy band -->
+<div class="trace">
+  <div class="t-title">🔗 規則層級<br>單向信任鏈<small>規則不重複定義・下游不創造新規則</small></div>
+  <div class="chain">
+    <div class="chip"><b>國際標準原文</b><small>Z39.18/14/23・NASA・AFRL</small></div>
+    <span class="chev">→</span>
+    <div class="chip"><b>STD 正本（本 skill）</b><small>What/Why・CTO 核准</small></div>
+    <span class="chev">→</span>
+    <div class="chip"><b>check_sp.py</b><small>機器可判定規則</small></div>
+    <span class="chev">→</span>
+    <div class="chip"><b>執行 skills</b><small>literature・scribe・latexer</small></div>
+    <span class="chev">→</span>
+    <div class="chip"><b>報告產出</b><small>vault → SP → TM/TP/設計報告</small></div>
+  </div>
+</div>
+
+<footer>
+  <span>pxa-standards skill v2｜正本：STD-SP-001 v3.1（治理）／SP-002 v2.0（結構與格式）｜裁定索引見 SKILL.md</span>
+  <span>Dragonfly UAS・SBE</span>
+</footer>
+
+</body>
+</html>
+     

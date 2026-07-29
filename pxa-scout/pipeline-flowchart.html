@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>scout skill — 文獻缺口探勘 Pipeline</title>
+<style>
+  :root{
+    --ice:#d4e4f7; --steel:#4a6fa5; --silver:#c0c0c0; --white:#fafafa;
+    --ink:#22334d; --muted:#5d7290; --line:#b9cde6;
+    --steel-dark:#3a5a89; --ice-soft:#e9f1fa;
+    --gate:#a8642f; --gate-bg:#fbeee2;
+    --stop:#b34040; --stop-bg:#fdecec;
+    --ok:#2f7d4f; --ok-bg:#e9f4ed;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:linear-gradient(180deg,#eef4fb 0%,var(--white) 40%);
+       font-family:"Noto Sans TC","Microsoft JhengHei","DejaVu Sans",-apple-system,sans-serif;
+       color:var(--ink);padding:34px 38px 30px;min-width:1560px}
+  header{display:flex;align-items:baseline;gap:16px;margin-bottom:6px}
+  h1{font-size:24px;font-weight:700;letter-spacing:.5px}
+  .beta{font-size:12px;color:var(--steel);border:1px solid var(--steel);border-radius:20px;padding:2px 10px}
+  .subtitle{color:var(--muted);font-size:13.5px;margin-bottom:26px}
+  .pipe{display:grid;grid-template-columns:275px 44px 300px 44px 330px 44px 280px 44px 275px;align-items:stretch}
+  .col{background:#fff;border:1px solid var(--line);border-radius:14px;
+       box-shadow:0 6px 18px rgba(74,111,165,.10);display:flex;flex-direction:column;overflow:hidden}
+  .col-head{padding:11px 14px;font-weight:700;font-size:14.5px;color:#fff;
+            background:linear-gradient(135deg,var(--steel),var(--steel-dark));
+            display:flex;align-items:center;gap:8px}
+  .col-head .stage{background:rgba(250,250,250,.22);border-radius:6px;font-size:11px;
+                   padding:2px 7px;font-weight:600;white-space:nowrap}
+  .col-body{padding:12px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .node{background:var(--ice-soft);border:1px solid var(--line);border-left:4px solid var(--steel);
+        border-radius:9px;padding:8px 11px;font-size:12.5px;line-height:1.5}
+  .node b{font-size:13px}
+  .node small{color:var(--muted);display:block;font-size:11.5px;line-height:1.45;margin-top:1px}
+  .down{align-self:center;color:var(--silver);font-size:13px;line-height:1;margin:-3px 0}
+  .gate{background:var(--gate-bg);border:1.5px dashed var(--gate);border-left:4px solid var(--gate);
+        border-radius:9px;padding:8px 11px;font-size:12.5px;color:#7a4a20;line-height:1.5}
+  .loop{align-self:center;font-size:11px;color:var(--gate);background:var(--gate-bg);border-radius:20px;padding:2px 10px}
+  .ok{background:var(--ok-bg);border-color:#bfdccb;border-left-color:var(--ok)}
+  .stop{background:var(--stop-bg);border:1px solid #e5baba;border-left:4px solid var(--stop);
+        border-radius:9px;padding:8px 11px;font-size:12.5px;color:#7a2626;line-height:1.5}
+  .arrow{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:6px;padding:0 2px}
+  .arrow svg{overflow:visible}
+  .alabel{writing-mode:vertical-rl;text-orientation:upright;font-size:10.5px;color:var(--steel);
+          letter-spacing:2px;background:var(--ice);border-radius:8px;padding:8px 3px;line-height:1.1}
+  .alabel.warn{color:var(--gate);background:var(--gate-bg)}
+  .trace{margin-top:26px;background:linear-gradient(135deg,#3a5a89,#22334d);
+         border-radius:14px;padding:15px 22px;display:flex;align-items:center;gap:14px;
+         box-shadow:0 6px 18px rgba(34,51,77,.25)}
+  .trace .t-title{color:var(--ice);font-weight:700;font-size:14px;white-space:nowrap}
+  .trace .t-title small{display:block;font-weight:400;font-size:11px;color:#9db6d8;letter-spacing:.5px}
+  .chain{display:flex;align-items:center;gap:0;flex:1;justify-content:space-evenly}
+  .chip{background:rgba(250,250,250,.10);border:1px solid rgba(212,228,247,.35);color:var(--white);
+        border-radius:9px;padding:7px 14px;font-size:12.5px;text-align:center;line-height:1.4}
+  .chip small{display:block;font-size:10.5px;color:#9db6d8}
+  .chev{color:#7f9cc4;font-size:16px;padding:0 8px}
+  footer{margin-top:12px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>scout skill｜文獻缺口探勘 Pipeline</h1>
+  <span class="beta">SBE 團隊 SOP・literature 上游</span>
+</header>
+<div class="subtitle">議題缺口 → vault 種子滾雪球（refs／cited-by／similar／keyword）→ 去重候選表 → 使用者裁定收錄——取代人工翻 reference list＋Google Scholar 來回</div>
+
+<div class="pipe">
+
+  <!-- ① gap -->
+  <div class="col">
+    <div class="col-head"><span class="stage">輸入</span>缺口確認</div>
+    <div class="col-body">
+      <div class="node"><b>vault 現況</b><small>obsidian MOC 該章＋範圍內 source notes</small></div>
+      <div class="node"><b>series-map 線索</b><small>L2 計數 ⚠、層級註記＝現成缺口指標</small></div>
+      <div class="down">▼</div>
+      <div class="node"><b>缺口陳述表</b><small>缺口一句話・種子清單・搜尋深度・候選上限</small></div>
+      <div class="gate"><b>✋ 使用者核准才開跑</b></div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#4a6fa5" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel">種子解析</div>
+  </div>
+
+  <!-- ② snowball -->
+  <div class="col">
+    <div class="col-head"><span class="stage">探勘</span>引用鏈滾雪球</div>
+    <div class="col-body">
+      <div class="node"><b>backward</b><small>種子的 reference list（引用了誰）</small></div>
+      <div class="node"><b>forward</b><small>cited by（誰引用了種子）</small></div>
+      <div class="node"><b>similar</b><small>語意相似推薦（S2）</small></div>
+      <div class="node"><b>keyword</b><small>缺口關鍵字搜尋</small></div>
+      <div class="down">▼</div>
+      <div class="node ok"><b>snowball.py sweep</b><small>合併・vault 去重・命中鏈數排序 → raw.json＋草稿表</small></div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#a8642f" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel warn">通道遞補</div>
+  </div>
+
+  <!-- ③ channels -->
+  <div class="col">
+    <div class="col-head" style="background:linear-gradient(135deg,#a8642f,#7a4a20)"><span class="stage">通道</span>資料來源（依序遞補）</div>
+    <div class="col-body">
+      <div class="node"><b>① snowball.py 直連</b><small>S2＋OpenAlex＋Crossref API・本機 Cowork 主場景・S2_API_KEY 解限流</small></div>
+      <div class="node"><b>② WebFetch API</b><small>雲端 session・429 退避 ≥60s・失敗即換</small></div>
+      <div class="node"><b>③ WebSearch</b><small>標題／關鍵字／arXiv／NTRS 逐筆組表</small></div>
+      <div class="node"><b>④ claude-in-chrome</b><small>使用者瀏覽器開 Google Scholar cited-by 頁</small></div>
+      <div class="gate"><b>每筆候選標註佐證通道</b><small style="color:#9a6a3f">禁止憑記憶造書目</small></div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#4a6fa5" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel">相關性篩選</div>
+  </div>
+
+  <!-- ④ triage -->
+  <div class="col">
+    <div class="col-head"><span class="stage">篩選</span>候選表產出</div>
+    <div class="col-body">
+      <div class="node"><b>逐筆比對缺口陳述</b><small>title＋abstract・不確定標 ?・不沉默丟棄</small></div>
+      <div class="node"><b>預測層級</b><small>期刊/NASA→L2、講義→L3（正式判定在 literature 建檔時）</small></div>
+      <div class="down">▼</div>
+      <div class="node ok"><b>candidates.md</b><small>documents/lit-scout/・書目/DOI/引用鏈關係/補缺口理由/OA/通道</small></div>
+      <div class="gate"><b>✋ 使用者裁定收錄清單</b></div>
+    </div>
+  </div>
+
+  <div class="arrow">
+    <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#2f7d4f" stroke-width="2.4" stroke-linecap="round"/></svg>
+    <div class="alabel">裁定後</div>
+  </div>
+
+  <!-- ⑤ handoff -->
+  <div class="col">
+    <div class="col-head" style="background:linear-gradient(135deg,#2f7d4f,#215c3a)"><span class="stage">交棒</span>取檔與停止</div>
+    <div class="col-body">
+      <div class="node ok"><b>OA 下載</b><small>arXiv／NTRS／出版社 OA → source/ 對應子資料夾（literature 命名慣例）</small></div>
+      <div class="node"><b>非 OA</b><small>採購／館際清單</small></div>
+      <div class="down">▼</div>
+      <div class="stop"><b>🛑 skill 停止點</b><small style="color:#a05555">source note 建檔・vault 收錄＝literature skill</small></div>
+      <div class="node"><b>literature skill</b><small>逐篇閱讀 → 三類筆記 → QA gate</small></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="trace">
+  <div class="t-title">🔗 探勘位置<br>於整條 pipeline<small>缺口 → 候選 → vault → SP</small></div>
+  <div class="chain">
+    <div class="chip"><b>缺口陳述</b><small>SP 撰寫/審查時發現</small></div>
+    <span class="chev">→</span>
+    <div class="chip"><b>scout</b><small>滾雪球候選表</small></div>
+    <span class="chev">→</span>
+    <div class="chip"><b>source/</b><small>OA 下載/採購</small></div>
+    <span class="chev">→</span>
+    <div class="chip"><b>literature</b><small>vault 建檔＋QA</small></div>
+    <span class="chev">→</span>
+    <div class="chip"><b>scribe</b><small>SP 報告引用</small></div>
+  </div>
+</div>
+
+<footer>
+  <span>scout skill v1｜方法學：systematic snowballing｜去重基準：obsidian/sources（DOI＋正規化標題）</span>
+  <span>Dragonfly UAS・SBE</span>
+</footer>
+
+</body>
+</html>
