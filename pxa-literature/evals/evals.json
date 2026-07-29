@@ -4,14 +4,26 @@
     {
       "id": 0,
       "prompt": "你是航太結構團隊的研究助理。專案根目錄是 <PROJECT_ROOT>，其中 source/Paper/ 有兩篇 PDF：grant1992.pdf（C. Grant 1992, Shear Centre of Thin-Walled Sections）與 Chauhan2018b.pdf（Chauhan & Martins 2018, 以 OpenAeroStruct 做低保真 wingbox 氣動結構最佳化）。研究主題：「薄壁截面剪力傳遞與 wingbox 初步尺寸」。請將這些文獻逐篇閱讀後，整理成 Obsidian 知識庫。使用者目前不在線上：所有需要確認之處請做合理假設並記錄，不要停下等待回覆。",
-      "expected_output": "在專案根目錄產生 obsidian/ vault：每篇 PDF 一則 source note（重點摘錄帶頁碼錨點）、數則原子筆記（一概念一則、互有 wikilink）、一則 MOC 收錄全部筆記；結構驗證通過（無斷鏈、無孤兒）；公式轉寫正確（特別是 dq/ds 符號）。",
+      "expected_output": "在專案根目錄產生 obsidian/ vault：先有 triage 表與研究框架（RQ 假設並標注未經確認）；每篇 PDF 一則 source note（重點摘錄帶頁碼錨點、含批判評估與涵蓋自評、frontmatter 含 bibkey/venue/evidence_level）、數則原子筆記（一概念一則、互有 wikilink、含爭議與歧異節）、一則 MOC（含研究框架與待釐清節）收錄全部筆記；check_vault.py error=0；公式轉寫正確（特別是 dq/ds 符號，經頁面渲染影像核對）。",
       "files": ["source/Paper/grant1992.pdf", "source/Paper/Chauhan2018b.pdf"]
     },
     {
       "id": 1,
       "prompt": "專案根目錄是 <PROJECT_ROOT>，已有完成的 Obsidian vault（obsidian/，內含 MOCs/、sources/、notes/）。請以 MOC「基於空氣動力條件的結構佈局規劃-MOC」為大綱，開始產出工程文件草稿到 documents/：本次僅試寫前三章（氣動載荷、氣動-結構耦合、結構理想化與建模），繁體中文、技術術語保留英文，重要陳述保留來源標註。使用者目前不在線上：所有需要確認之處請做合理假設並記錄，不要停下等待回覆。",
-      "expected_output": "documents/ 內產生 .md 工程文件草稿：章節結構對應 MOC 前三章、內容為連貫敘事而非筆記堆疊、重要陳述帶（作者 年份, 頁碼）標註、文末參考文獻對應 source notes。",
+      "expected_output": "documents/ 內產生 .md 工程文件草稿：章節結構對應 MOC 前三章、內容為連貫敘事而非筆記堆疊、重要陳述帶（作者 年份, 頁碼）標註、弱證據層級結論在行文中如實限定效力、文末參考文獻由 source notes 的 bibkey/書目 frontmatter 機械生成。",
       "files": ["obsidian/ (完整 vault)"]
+    },
+    {
+      "id": 2,
+      "prompt": "專案根目錄是 <PROJECT_ROOT>。source/Paper/ 有兩篇對同一概念（機翼氣動彈性發散速度估算）採不同符號慣例且結論部分衝突的 PDF（一篇主張簡化條帶理論在低展弦比即失效、另一篇主張修正因子可延伸適用）。vault 已有其中一篇的 source note 與原子筆記。請將第二篇整合進 vault。使用者目前不在線上：所有需要確認之處請做合理假設並記錄，不要停下等待回覆。",
+      "expected_output": "不另建重複原子筆記——第二篇觀點整合進既有原子筆記：「爭議與歧異」節並陳兩文主張（各帶頁碼錨點）且標記「未裁定」、同步登錄 MOC 待釐清節；符號表以三欄對映兩文的不同記號並說明轉換；被修改的原子筆記 status 降回 draft、verified 重設 none、追加變更紀錄一行；MOC 比較矩陣連動更新；check_vault.py error=0。",
+      "files": ["source/Paper/paperA.pdf", "source/Paper/paperB.pdf", "obsidian/ (部分 vault)"]
+    },
+    {
+      "id": 3,
+      "prompt": "專案根目錄是 <PROJECT_ROOT>，obsidian/ vault 上次 QA 後又被手動編輯過。請執行完整 QA gate 並修復所有問題後回報。使用者目前不在線上：所有需要確認之處請做合理假設並記錄，不要停下等待回覆。",
+      "expected_output": "先跑 scripts/check_vault.py 取得 error/warning 清單（vault 內含播種的違規：斷鏈、無錨點摘錄、stable-但-verified:none、$$ 缺 \\tag、未建檔文獻）；逐項修復：斷鏈補建或改連、錨點回查原文補上（不可捏造頁碼——查無原文對應時降級該陳述並標注待確認）、status/verified 依實際驗證狀態改正而非直接改欄位湊數、新文獻補建 source note；重跑至 error=0；以表格回報修復前後對照與同型錯誤排查結果。",
+      "files": ["obsidian/ (含播種違規的 vault)", "source/ (含一篇未建檔 PDF)"]
     }
   ]
 }

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>literature skill × Obsidian — 專業知識資料庫 Pipeline</title>
+<title>literature skill v3 × Obsidian — 專業知識資料庫 Pipeline</title>
 <style>
   :root{
     --ice:#d4e4f7; --steel:#4a6fa5; --silver:#c0c0c0; --white:#fafafa;
@@ -12,6 +12,7 @@
     --gate:#a8642f; --gate-bg:#fbeee2;
     --stop:#b34040; --stop-bg:#fdecec;
     --ok:#2f7d4f; --ok-bg:#e9f4ed;
+    --new:#6b4fa5; --new-bg:#f0ecf9; --new-line:#cfc3e8;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:linear-gradient(180deg,#eef4fb 0%,var(--white) 40%);
@@ -22,10 +23,19 @@
   header{display:flex;align-items:baseline;gap:16px;margin-bottom:6px}
   h1{font-size:24px;font-weight:700;letter-spacing:.5px}
   .beta{font-size:12px;color:var(--steel);border:1px solid var(--steel);border-radius:20px;padding:2px 10px}
-  .subtitle{color:var(--muted);font-size:13.5px;margin-bottom:26px}
+  .v3tag{font-size:12px;color:#fff;background:linear-gradient(135deg,var(--new),#553c85);
+         border-radius:20px;padding:2px 10px}
+  .subtitle{color:var(--muted);font-size:13.5px;margin-bottom:14px}
+
+  /* ---------- 階段〇 band ---------- */
+  .frame{background:var(--new-bg);border:1.5px dashed var(--new);border-radius:12px;
+         padding:10px 18px;margin-bottom:18px;display:flex;align-items:center;gap:18px;font-size:12.5px}
+  .frame b{color:var(--new);font-size:13px;white-space:nowrap}
+  .frame .fitem{background:#fff;border:1px solid var(--new-line);border-radius:8px;padding:5px 12px;line-height:1.45}
+  .frame .fitem small{color:var(--muted);display:block;font-size:11px}
 
   /* ---------- pipeline row ---------- */
-  .pipe{display:grid;grid-template-columns:215px 44px 330px 44px 260px 44px 285px 44px 305px;
+  .pipe{display:grid;grid-template-columns:200px 44px 350px 44px 260px 44px 290px 44px 300px;
         align-items:stretch}
 
   .col{background:#fff;border:1px solid var(--line);border-radius:14px;
@@ -35,21 +45,23 @@
             display:flex;align-items:center;gap:8px}
   .col-head .stage{background:rgba(250,250,250,.22);border-radius:6px;font-size:11px;
                    padding:2px 7px;font-weight:600;white-space:nowrap}
-  .col-body{padding:12px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .col-body{padding:12px;display:flex;flex-direction:column;gap:8px;flex:1}
 
   .node{background:var(--ice-soft);border:1px solid var(--line);border-left:4px solid var(--steel);
-        border-radius:9px;padding:8px 11px;font-size:12.5px;line-height:1.5}
+        border-radius:9px;padding:7px 11px;font-size:12.5px;line-height:1.5}
   .node b{font-size:13px}
   .node small{color:var(--muted);display:block;font-size:11.5px;line-height:1.45;margin-top:1px}
-  .down{align-self:center;color:var(--silver);font-size:13px;line-height:1;margin:-3px 0}
+  .node.new{background:var(--new-bg);border-color:var(--new-line);border-left-color:var(--new)}
+  .node.new b::after{content:" ◆v3";font-size:9.5px;color:var(--new);vertical-align:super}
+  .down{align-self:center;color:var(--silver);font-size:12px;line-height:1;margin:-3px 0}
 
   .gate{background:var(--gate-bg);border:1.5px dashed var(--gate);border-left:4px solid var(--gate);
-        border-radius:9px;padding:8px 11px;font-size:12.5px;color:#7a4a20;line-height:1.5}
+        border-radius:9px;padding:7px 11px;font-size:12.5px;color:#7a4a20;line-height:1.5}
   .loop{align-self:center;font-size:11px;color:var(--gate);background:var(--gate-bg);
         border-radius:20px;padding:2px 10px}
   .ok{background:var(--ok-bg);border-color:#bfdccb;border-left-color:var(--ok)}
   .stop{background:var(--stop-bg);border:1px solid #e5baba;border-left:4px solid var(--stop);
-        border-radius:9px;padding:8px 11px;font-size:12.5px;color:#7a2626;line-height:1.5}
+        border-radius:9px;padding:7px 11px;font-size:12.5px;color:#7a2626;line-height:1.5}
 
   /* wikilink cluster */
   .wiki{position:relative;display:flex;flex-direction:column;gap:9px}
@@ -72,7 +84,7 @@
   .alabel.stopc{color:var(--stop);background:var(--stop-bg)}
 
   /* ---------- traceability band ---------- */
-  .trace{margin-top:26px;background:linear-gradient(135deg,#3a5a89,#22334d);
+  .trace{margin-top:24px;background:linear-gradient(135deg,#3a5a89,#22334d);
          border-radius:14px;padding:15px 22px;display:flex;align-items:center;gap:14px;
          box-shadow:0 6px 18px rgba(34,51,77,.25)}
   .trace .t-title{color:var(--ice);font-weight:700;font-size:14px;white-space:nowrap}
@@ -83,6 +95,11 @@
   .chip small{display:block;font-size:10.5px;color:#9db6d8}
   .chev{color:#7f9cc4;font-size:16px;padding:0 8px}
 
+  /* ---------- incremental band ---------- */
+  .incr{margin-top:12px;background:var(--gate-bg);border:1.5px dashed var(--gate);border-radius:12px;
+        padding:9px 18px;font-size:12px;color:#7a4a20;display:flex;gap:14px;align-items:center}
+  .incr b{white-space:nowrap}
+
   footer{margin-top:12px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between}
 </style>
 </head>
@@ -91,8 +108,18 @@
 <header>
   <h1>literature skill × Obsidian｜專業知識資料庫 Pipeline</h1>
   <span class="beta">SBE 團隊 SOP</span>
+  <span class="v3tag">v3｜研究 SOP</span>
 </header>
-<div class="subtitle">從原始文獻到可追溯的工程知識庫，再到下游 App／程式碼——每一條公式都能追溯回原文頁碼</div>
+<div class="subtitle">從原始文獻到可追溯的工程知識庫，再到下游 App／程式碼——每一條公式追溯回原文頁碼、每一份文獻經批判評估、每一處歧異被並陳與裁定</div>
+
+<!-- 階段〇 -->
+<div class="frame">
+  <b>階段〇｜研究框架 ◆v3</b>
+  <div class="fitem"><b>研究問題 RQ</b><small>本輪要回答什麼（RQ1…）</small></div>
+  <div class="fitem"><b>工程決策需求</b><small>支撐什麼決策 → 決定比較矩陣欄位</small></div>
+  <div class="fitem"><b>萃取判準</b><small>關聯 RQ・可複用・支撐決策——原子筆記取捨依據</small></div>
+  <div class="fitem" style="border-color:#e3d2a8"><b>✋ 使用者裁定</b><small>無人值守＝假設＋記錄、不停等</small></div>
+</div>
 
 <div class="pipe">
 
@@ -104,29 +131,32 @@
       <div class="node"><b>Textbooks</b><small>教科書精選章節</small></div>
       <div class="node"><b>Lecture Notes</b><small>課程講義</small></div>
       <div class="node"><b>Web Resources</b><small>官方技術文件</small></div>
+      <div class="node new"><b>triage 表</b><small>Pass 1 全批略讀：seminal／derivative・關聯 RQ・分群・深讀順序</small></div>
     </div>
   </div>
 
   <div class="arrow">
     <svg width="30" height="18"><path d="M0 9 H20 M14 3 L22 9 L14 15" fill="none" stroke="#4a6fa5" stroke-width="2.4" stroke-linecap="round"/></svg>
-    <div class="alabel">逐篇閱讀</div>
+    <div class="alabel">依序深讀</div>
   </div>
 
   <!-- ② stage 1 -->
   <div class="col">
     <div class="col-head"><span class="stage">階段一</span>literature skill</div>
     <div class="col-body">
-      <div class="node"><b>盤點與差異比對</b><small>已有筆記不重做</small></div>
+      <div class="node"><b>盤點與差異比對</b><small>check_vault.py 反查未建檔・已有筆記不重做</small></div>
       <div class="down">▼</div>
-      <div class="node"><b>source note</b> 文獻筆記<small>每篇一則・重點摘錄帶頁碼／式號錨點</small></div>
+      <div class="node"><b>source note</b> 文獻筆記<small>每篇一則・頁碼／式號錨點・完整書目（bibkey/DOI/venue）<br>公式以頁面渲染影像視覺核對</small></div>
       <div class="down">▼</div>
-      <div class="node"><b>atomic note</b> 原子筆記<small>一概念一則・文獻回顧口吻<br>符號表＋公式強制分離（$$＋tag 編號）</small></div>
+      <div class="node new"><b>批判評估＋涵蓋自評</b><small>證據層級 L1–L4・方法有效性・適用邊界<br>章節逐項標記已萃取／未萃取（recall 可追溯）</small></div>
       <div class="down">▼</div>
-      <div class="node"><b>MOC</b> 主題索引<small>理論脈絡串接＝階段二文件大綱</small></div>
+      <div class="node"><b>atomic note</b> 原子筆記<small>一概念一則・文獻回顧口吻・公式強制分離（$$＋tag）<br><b>爭議與歧異必節</b>：衝突並陳＋裁定，禁止默默擇一 ◆v3<br>符號表三欄對映：本筆記↔原文（符號慣例筆記）◆v3</small></div>
       <div class="down">▼</div>
-      <div class="gate"><b>QA Gate</b><small style="color:#9a6a3f">check_vault.py 結構驗證＋內容抽驗對照 PDF 原文</small></div>
+      <div class="node new"><b>MOC＋綜合層</b><small>索引＋方法比較矩陣・SOTA 評述・gap 識別<br>開放問題 → 直接餵 scout 缺口陳述</small></div>
+      <div class="down">▼</div>
+      <div class="gate"><b>QA Gate（雙重驗證）</b><small style="color:#9a6a3f">結構：check_vault.py 機械檢查（錨點・章節・status↔verified・公式 tag）<br>內容三軌：正確性抽驗 20%・原子筆記公式<b>全驗</b>・完整性抽驗 ◆v3</small></div>
       <div class="loop">↺ 發現錯誤 → 修正後重驗</div>
-      <div class="node ok"><b>status 品質流</b><small>draft → reviewed → <b>stable</b>（經原文核驗）</small></div>
+      <div class="node ok"><b>status 品質流</b><small>draft → reviewed → <b>stable</b>（與 verified 欄位機械綁定；修改即降級）</small></div>
     </div>
   </div>
 
@@ -140,13 +170,13 @@
     <div class="col-head"><span class="stage">知識庫</span>obsidian/（Obsidian）</div>
     <div class="col-body">
       <div class="wiki">
-        <div class="node"><b>sources/</b><small>37+ 文獻筆記・書目與頁碼錨點</small></div>
+        <div class="node"><b>sources/</b><small>文獻筆記・完整書目與頁碼錨點・批判評估</small></div>
         <div class="wikitag">wikilink</div>
-        <div class="node"><b>notes/</b><small>82+ 原子筆記・平均出鏈 5.6</small></div>
+        <div class="node"><b>notes/</b><small>原子筆記＋每主題符號慣例筆記</small></div>
         <div class="wikitag">wikilink</div>
-        <div class="node"><b>MOCs/</b><small>主題地圖・全筆記 100% 收錄</small></div>
+        <div class="node"><b>MOCs/</b><small>主題地圖＋綜合層・全筆記 100% 收錄</small></div>
       </div>
-      <div class="node" style="margin-top:auto"><b>單一事實來源</b><small>無斷鏈・無孤兒・全可追溯</small></div>
+      <div class="node" style="margin-top:auto"><b>單一事實來源</b><small>無斷鏈・無孤兒・全可追溯・歧異已裁定或列管</small></div>
     </div>
   </div>
 
@@ -159,9 +189,9 @@
   <div class="col">
     <div class="col-head"><span class="stage">階段二</span>documents/</div>
     <div class="col-body">
-      <div class="node"><b>MOC 作大綱</b><small>doc-coauthoring 共筆迭代</small></div>
+      <div class="node"><b>MOC 作大綱</b><small>doc-coauthoring 共筆迭代<br>比較矩陣／SOTA → 方法比較與選型依據章節 ◆v3</small></div>
       <div class="down">▼</div>
-      <div class="node"><b>主題.md</b> 開發稿<small>連貫敘事・來源標註（作者 年份, 頁碼）</small></div>
+      <div class="node"><b>主題.md</b> 開發稿<small>連貫敘事・來源標註（作者 年份, 頁碼）<br>參考文獻由 bibkey 機械生成・弱證據（L1/L2）如實限定效力 ◆v3</small></div>
       <div class="down">▼</div>
       <div class="node"><b>.docx／.pdf</b> 交付<small>docx＝簽核追蹤・pdf＝唯讀</small></div>
       <div class="down">▼</div>
@@ -182,9 +212,16 @@
       <div class="node"><b>Python／EXE</b><small>數值計算・參數化工具<br>依據：演算法程序節＋數學形式編號公式</small></div>
       <div class="node"><b>C／C++ Code</b><small>飛控・嵌入式實作<br>依據：僅取 <b>stable</b> 級公式與符號表</small></div>
       <div class="node" style="border-left-color:#c9a227;background:#fff8ea"><small style="margin-top:0">程式 docstring／註解引用「筆記名＋式號」<br>如 <b>Eq.(3), Trim Correction Algorithm</b></small></div>
+      <div class="node" style="border-left-color:#6b4fa5;background:#f0ecf9"><small style="margin-top:0"><b>MOC 開放問題 → scout 缺口陳述</b> ◆v3<br>「缺乏 X 條件下 Y 的 Z 證據」→ 滾雪球補文獻</small></div>
     </div>
   </div>
 
+</div>
+
+<!-- incremental update band -->
+<div class="incr">
+  <b>↻ 增量更新 ◆v3</b>
+  <span>新文獻（含 scout 回流）→ 併入 triage → source note → 整合進<b>既有</b>原子筆記（status 降級＋變更紀錄）→ 連動 MOC／矩陣／開放問題 → 已交付文件列「受影響段落清單」由使用者決定改版 → 重跑 QA gate</span>
 </div>
 
 <!-- traceability band -->
@@ -193,16 +230,16 @@
   <div class="chain">
     <div class="chip"><b>程式碼</b><small>註解：筆記名＋式號</small></div>
     <span class="chev">⇄</span>
-    <div class="chip"><b>atomic note</b><small>數學形式 Eq.(n)・符號表</small></div>
+    <div class="chip"><b>atomic note</b><small>數學形式 Eq.(n)・符號對映表</small></div>
     <span class="chev">⇄</span>
-    <div class="chip"><b>source note</b><small>重點摘錄・頁碼錨點</small></div>
+    <div class="chip"><b>source note</b><small>重點摘錄・頁碼錨點・批判評估</small></div>
     <span class="chev">⇄</span>
     <div class="chip"><b>原始文獻</b><small>PDF 頁碼／原文式號</small></div>
   </div>
 </div>
 
 <footer>
-  <span>literature skill v2｜QA gate：結構驗證（check_vault.py）＋內容抽驗（PDF 原文逐式核對）</span>
+  <span>literature skill v3｜QA gate：結構驗證（check_vault.py 機械檢查 12 項）＋內容三軌抽驗（正確性 20%・公式全驗・完整性 recall）</span>
   <span>Dragonfly UAS・SBE</span>
 </footer>
 
