@@ -23,7 +23,7 @@ S2R = "https://api.semanticscholar.org/recommendations/v1"
 OA = "https://api.openalex.org"
 CR = "https://api.crossref.org"
 FIELDS = "title,year,externalIds,venue,citationCount,openAccessPdf,authors"
-MAILTO = "scout@dragonflyuas.com.tw"
+MAILTO = "research-suite@example.com"
 SLEEP = 1.2 if os.environ.get("S2_API_KEY") else 3.2
 
 

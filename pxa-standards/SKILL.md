@@ -7,7 +7,7 @@ description: PXA 技術報告標準體系的規則 SSoT——收錄 PXA-STD-SP-0
 
 > 📊 本 skill 套件內附 `pipeline-flowchart.html`——規則體系一頁式架構圖。第一次使用或向他人說明時，先開這張圖。
 
-本 skill 為 PXA 標準體系的**規則單一真實來源（SSoT）與發佈載體**：`references/` 內的 STD 文件即正本（controlled documents，含版本紀錄，CTO 核准權責）。下游 skill（literature、scribe，未來 latexer）撰寫時**隨用隨讀本 skill 的 references/，不憑記憶**。
+本 skill 為 PXA 標準體系的**規則單一真實來源（SSoT）與發佈載體**：`references/` 內的 STD 文件即正本（controlled documents，含版本紀錄，標準核准權責）。下游 skill（literature、scribe，未來 latexer）撰寫時**隨用隨讀本 skill 的 references/，不憑記憶**。
 
 ## 文件地圖（何時讀哪份）
 
