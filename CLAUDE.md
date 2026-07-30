@@ -29,6 +29,7 @@
 
 - **新增／移除／改名 skill**：在 `skills/` 下增／刪／改資料夾 → 改 `SKILL.md` 的 `name:` → 更新 README（必要時寫 CHANGELOG）→ 驗證 JSON 與 `skills/` 結構 → 交由維護者 commit/push。（不需動 `marketplace.json` 的 skills，因為沒有該欄位。）
 - **版本升級**：沿用 `pxa-literature` v3 的「審查 → 實作 → CHANGELOG」紀律（依審查發現逐項編號、落點可追溯）。
+- **發佈＝bump 版本**：只要 skill 內容有變更，push 前**必須**同步遞增 `.claude-plugin/plugin.json` 與 `marketplace.json`（plugin 條目）的 `version`（semver）——桌面 App 以 version 判斷有無新版，版本不變會顯示「On latest version」而永遠不更新（踩過的雷）。
 - **發佈前檢查**：JSON 合法、`skills/<name>/SKILL.md` 皆存在、名稱一致、`source` 以 `./` 開頭。`claude plugin validate .` 可跑但**較寬鬆**（會放行裸 `.`）；最終以 desktop/claude.ai 實際 `add`＋`install` 跑一次、確認 skill 有載入為準。
 - **外部依賴**：以 plugin 層 `plugin.json` 的 `dependencies` 宣告（可鎖 semver、可跨 marketplace），不隨意 vendoring；vendoring 須遵守來源授權並保留出處。
 
