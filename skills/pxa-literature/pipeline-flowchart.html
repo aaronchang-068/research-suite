@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>literature skill v3 × Obsidian — 專業知識資料庫 Pipeline</title>
+<title>literature skill v3.1 × Obsidian — 專業知識資料庫 Pipeline</title>
 <style>
   :root{
     --ice:#d4e4f7; --steel:#4a6fa5; --silver:#c0c0c0; --white:#fafafa;
@@ -53,6 +53,8 @@
   .node small{color:var(--muted);display:block;font-size:11.5px;line-height:1.45;margin-top:1px}
   .node.new{background:var(--new-bg);border-color:var(--new-line);border-left-color:var(--new)}
   .node.new b::after{content:" ◆v3";font-size:9.5px;color:var(--new);vertical-align:super}
+  .node.new31{background:var(--new-bg);border-color:var(--new-line);border-left-color:var(--new)}
+  .node.new31 b::after{content:" ◆v3.1";font-size:9.5px;color:var(--new);vertical-align:super}
   .down{align-self:center;color:var(--silver);font-size:12px;line-height:1;margin:-3px 0}
 
   .gate{background:var(--gate-bg);border:1.5px dashed var(--gate);border-left:4px solid var(--gate);
@@ -108,7 +110,7 @@
 <header>
   <h1>literature skill × Obsidian｜專業知識資料庫 Pipeline</h1>
   <span class="beta">SBE 團隊 SOP</span>
-  <span class="v3tag">v3｜研究 SOP</span>
+  <span class="v3tag">v3.1｜研究 SOP</span>
 </header>
 <div class="subtitle">從原始文獻到可追溯的工程知識庫，再到下游 App／程式碼——每一條公式追溯回原文頁碼、每一份文獻經批判評估、每一處歧異被並陳與裁定</div>
 
@@ -150,6 +152,8 @@
       <div class="down">▼</div>
       <div class="node new"><b>批判評估＋涵蓋自評</b><small>證據層級 L1–L4・方法有效性・適用邊界<br>章節逐項標記已萃取／未萃取（recall 可追溯）</small></div>
       <div class="down">▼</div>
+      <div class="node new31"><b>工程實踐</b><small>實作標的（式號範圍）・介面定義（維度/單位/來源式號）・逐步實驗步驟（錨點＋驗證點）<br>純文字不畫圖・無可實作內容寫「不適用」（E8 機械檢查）</small></div>
+      <div class="down">▼</div>
       <div class="node"><b>atomic note</b> 原子筆記<small>一概念一則・文獻回顧口吻・公式強制分離（$$＋tag）<br><b>爭議與歧異必節</b>：衝突並陳＋裁定，禁止默默擇一 ◆v3<br>符號表三欄對映：本筆記↔原文（符號慣例筆記）◆v3</small></div>
       <div class="down">▼</div>
       <div class="node new"><b>MOC＋綜合層</b><small>索引＋方法比較矩陣・SOTA 評述・gap 識別<br>開放問題 → 直接餵 scout 缺口陳述</small></div>
@@ -189,7 +193,7 @@
   <div class="col">
     <div class="col-head"><span class="stage">階段二</span>documents/</div>
     <div class="col-body">
-      <div class="node"><b>MOC 作大綱</b><small>doc-coauthoring 共筆迭代<br>比較矩陣／SOTA → 方法比較與選型依據章節 ◆v3</small></div>
+      <div class="node"><b>MOC 作大綱</b><small>doc-coauthoring 共筆迭代<br>比較矩陣／SOTA → 方法比較與選型依據章節 ◆v3<br>工程實踐節 → 實作/驗證章素材 ◆v3.1</small></div>
       <div class="down">▼</div>
       <div class="node"><b>主題.md</b> 開發稿<small>連貫敘事・來源標註（作者 年份, 頁碼）<br>參考文獻由 bibkey 機械生成・弱證據（L1/L2）如實限定效力 ◆v3</small></div>
       <div class="down">▼</div>
@@ -209,7 +213,7 @@
     <div class="col-head" style="background:linear-gradient(135deg,#2f7d4f,#215c3a)"><span class="stage">下游</span>依知識庫產出</div>
     <div class="col-body">
       <div class="node"><b>HTML App</b><small>概念說明・互動圖解<br>依據：MOC 脈絡＋原子筆記圖文</small></div>
-      <div class="node"><b>Python／EXE</b><small>數值計算・參數化工具<br>依據：演算法程序節＋數學形式編號公式</small></div>
+      <div class="node"><b>Python／Simulink／EXE</b><small>數值計算・控制律建模・參數化工具<br>依據：演算法程序＋數學形式＋工程實踐（介面定義・逐步實驗步驟）◆v3.1</small></div>
       <div class="node"><b>C／C++ Code</b><small>飛控・嵌入式實作<br>依據：僅取 <b>stable</b> 級公式與符號表</small></div>
       <div class="node" style="border-left-color:#c9a227;background:#fff8ea"><small style="margin-top:0">程式 docstring／註解引用「筆記名＋式號」<br>如 <b>Eq.(3), Trim Correction Algorithm</b></small></div>
       <div class="node" style="border-left-color:#6b4fa5;background:#f0ecf9"><small style="margin-top:0"><b>MOC 開放問題 → scout 缺口陳述</b> ◆v3<br>「缺乏 X 條件下 Y 的 Z 證據」→ 滾雪球補文獻</small></div>
@@ -239,7 +243,7 @@
 </div>
 
 <footer>
-  <span>literature skill v3｜QA gate：結構驗證（check_vault.py 機械檢查 12 項）＋內容三軌抽驗（正確性 20%・公式全驗・完整性 recall）</span>
+  <span>literature skill v3.1｜QA gate：結構驗證（check_vault.py 機械檢查，含 E8 工程實踐）＋內容三軌抽驗（正確性 20%・公式全驗・完整性 recall）</span>
   <span>research-suite</span>
 </footer>
 

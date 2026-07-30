@@ -17,7 +17,7 @@
         （W: source 缺 doi、stable 缺 verified_date）
   E6  source_file 指向實際檔案（相對路徑比對；同名檔必須給完整相對路徑）
   E7  重點摘錄／來源條目頁碼錨點（每條含 p./§/Eq./ch./式 等錨點）
-  E8  必要章節（source: 批判評估、涵蓋自評；atomic: 爭議與歧異 等）
+  E8  必要章節（source: 批判評估、涵蓋自評、工程實踐；atomic: 爭議與歧異 等）
   E9  status ↔ verified 一致性（stable 必須 verified: content）
   E10 公式紀律（$$ display block 必帶 \\tag）
   W2  行內 $...$ 夾帶等號（疑似完整方程式塞進行文）
@@ -46,7 +46,7 @@ REQ_FM = {
     "MOCs": ["type"],
 }
 REQ_SECTIONS = {
-    "sources": ["摘要", "重點摘錄", "批判評估", "涵蓋自評"],
+    "sources": ["摘要", "重點摘錄", "批判評估", "涵蓋自評", "工程實踐"],
     "notes": ["核心陳述", "文獻回顧", "爭議與歧異", "關鍵要點", "相關概念", "來源"],
 }
 

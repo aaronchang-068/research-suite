@@ -4,7 +4,7 @@
     {
       "id": 0,
       "prompt": "你是航太結構團隊的研究助理。專案根目錄是 <PROJECT_ROOT>，其中 source/Paper/ 有兩篇 PDF：grant1992.pdf（C. Grant 1992, Shear Centre of Thin-Walled Sections）與 Chauhan2018b.pdf（Chauhan & Martins 2018, 以 OpenAeroStruct 做低保真 wingbox 氣動結構最佳化）。研究主題：「薄壁截面剪力傳遞與 wingbox 初步尺寸」。請將這些文獻逐篇閱讀後，整理成 Obsidian 知識庫。使用者目前不在線上：所有需要確認之處請做合理假設並記錄，不要停下等待回覆。",
-      "expected_output": "在專案根目錄產生 obsidian/ vault：先有 triage 表與研究框架（RQ 假設並標注未經確認）；每篇 PDF 一則 source note（重點摘錄帶頁碼錨點、含批判評估與涵蓋自評、frontmatter 含 bibkey/venue/evidence_level）、數則原子筆記（一概念一則、互有 wikilink、含爭議與歧異節）、一則 MOC（含研究框架與待釐清節）收錄全部筆記；check_vault.py error=0；公式轉寫正確（特別是 dq/ds 符號，經頁面渲染影像核對）。",
+      "expected_output": "在專案根目錄產生 obsidian/ vault：先有 triage 表與研究框架（RQ 假設並標注未經確認）；每篇 PDF 一則 source note（重點摘錄帶頁碼錨點、含批判評估、涵蓋自評與工程實踐——實作藍圖或「不適用」註記、frontmatter 含 bibkey/venue/evidence_level）、數則原子筆記（一概念一則、互有 wikilink、含爭議與歧異節）、一則 MOC（含研究框架與待釐清節）收錄全部筆記；check_vault.py error=0；公式轉寫正確（特別是 dq/ds 符號，經頁面渲染影像核對）。",
       "files": ["source/Paper/grant1992.pdf", "source/Paper/Chauhan2018b.pdf"]
     },
     {
@@ -24,6 +24,12 @@
       "prompt": "專案根目錄是 <PROJECT_ROOT>，obsidian/ vault 上次 QA 後又被手動編輯過。請執行完整 QA gate 並修復所有問題後回報。使用者目前不在線上：所有需要確認之處請做合理假設並記錄，不要停下等待回覆。",
       "expected_output": "先跑 scripts/check_vault.py 取得 error/warning 清單（vault 內含播種的違規：斷鏈、無錨點摘錄、stable-但-verified:none、$$ 缺 \\tag、未建檔文獻）；逐項修復：斷鏈補建或改連、錨點回查原文補上（不可捏造頁碼——查無原文對應時降級該陳述並標注待確認）、status/verified 依實際驗證狀態改正而非直接改欄位湊數、新文獻補建 source note；重跑至 error=0；以表格回報修復前後對照與同型錯誤排查結果。",
       "files": ["obsidian/ (含播種違規的 vault)", "source/ (含一篇未建檔 PDF)"]
+    },
+    {
+      "id": 4,
+      "prompt": "專案根目錄是 <PROJECT_ROOT>，source/Paper/ 有兩篇 PDF：一篇提出附完整方程式與方塊圖的增量式控制律（可實作）、一篇為該領域近十年方法之 survey（無單一可實作方法）。研究主題已有既定 RQ。請將兩篇整理進 vault，特別注意 source note 的「工程實踐」節。使用者目前不在線上：所有需要確認之處請做合理假設並記錄，不要停下等待回覆。",
+      "expected_output": "兩則 source note 皆含「工程實踐」節：控制律論文寫出實作標的（對應式號範圍）、介面定義表（輸入/輸出/參數含維度單位與來源式號）、逐步實驗步驟（每步帶式號/頁碼錨點、末附與文獻圖表對比的驗證點），全部純文字、無圖；survey 論文寫「不適用（原因）」而非硬湊步驟；步驟不重複原子筆記「演算法程序」的推導細節、只引用；check_vault.py error=0（含 E8 工程實踐檢查）。",
+      "files": ["source/Paper/incremental_control.pdf", "source/Paper/survey_decade.pdf"]
     }
   ]
 }

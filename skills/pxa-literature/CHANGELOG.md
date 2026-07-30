@@ -1,5 +1,19 @@
 # literature skill — CHANGELOG
 
+## v3.1（2026-07-30）
+
+新增「工程實踐」章節（source note）——銜接文獻研究與工程實作（coding／Simulink modeling）。
+
+| 項目 | 變更 | 落點 |
+|------|------|------|
+| 工程實踐章節 | source note 於「我的評註」後新增**必要**章節：實作標的／介面定義（維度、單位、來源式號）／逐步實驗步驟（帶錨點＋驗證點）；純文字描述、不畫圖；無可實作內容寫「不適用（原因）」（比照「爭議與歧異」的「無」模式） | SKILL.md §階段一-3、templates/source-note.md |
+| 機械檢查 | E8 必要章節（sources）加入「工程實踐」 | scripts/check_vault.py |
+| 階段二連動 | 「工程實踐」節彙整為工程文件「實作/驗證」章的素材 | SKILL.md §階段二-1 |
+| evals | eval 0 expected_output 納入工程實踐；新增 eval 4（可實作文獻寫實作藍圖、survey 寫不適用） | evals/evals.json |
+| 流程圖同步 | 階段一插入「工程實踐」節點（◆v3.1 標記）；階段二 MOC 節點加「工程實踐 → 實作/驗證章素材」；下游節點改「Python／Simulink／EXE」並列工程實踐為依據 | pipeline-flowchart.html |
+
+設計原則：概念層演算法細節仍住原子筆記「演算法程序」，工程實踐是**文獻層級**的端到端實作藍圖，只引用不重複（一個概念一個家）。
+
 ## v3（2026-07-28）
 
 依審查發現逐步更新（編號對應審查報告；v2 原版保留於 `.claude/skills/literature/`，本版位於專案根 `literature-v3/`，經審閱後手動取代原版即可生效）。

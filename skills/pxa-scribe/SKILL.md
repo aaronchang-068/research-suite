@@ -11,7 +11,7 @@ description: 從 obsidian 知識庫（Obsidian vault）產出合規的 PXA SP（
 
 ## 規則 SSoT（撰寫時隨用隨讀，不要憑記憶）
 
-位置：`pxa-standards` skill（`<專案根>/.claude/skills/pxa-standards/`，staging 同步於 `skills-staging/pxa-standards/`）。CLU 系列已退役，規則一律以 pxa-standards 的 STD 正本為準。
+位置：同 plugin（research-suite）內的 `pxa-standards` skill——下表檔案路徑均相對於該 skill 根目錄，由 skill 系統定位，勿寫死安裝路徑。CLU 系列已退役，規則一律以 pxa-standards 的 STD 正本為準。
 
 | 文件 | 用途 | 何時讀 |
 |------|------|--------|
