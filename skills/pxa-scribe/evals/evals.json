@@ -1,0 +1,41 @@
+{
+  "skill_name": "pxa-scribe",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "專案根目錄是 <PROJECT_ROOT>，obsidian/ vault 已完成 QA（check_vault error=0），documents/SP-series-map.md 指派本次撰寫 PXA-STRUCT-SP-2026-002（薄壁截面剪力流），素材筆記 6 則（4 stable、2 reviewed）。請立案並開始撰寫。使用者在線上。",
+      "expected_output": "先跑前置檢查：check_vault 通過確認、素材筆記 status 分佈列出、範圍內 L2 文獻計數（不足 5 依協調制回報使用者裁量、不硬擋也不沉默）；產出立案表（STRN＋+v1-0+DRAFT 後綴、Quick/Update 模式選擇、§4.x 主題×素材筆記對應表、預估 [C-n] 方向）交使用者核准；核准後依 SP 撰寫順序從 §2.3 文獻回顧動筆，完成該節即停下交審，不連寫多個 Part。",
+      "files": [
+        "obsidian/ (完整 vault)",
+        "documents/SP-series-map.md"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "documents/report/PXA-STRUCT-SP-2026-002+v1-0+DRAFT.md 草稿已完成，請執行交付前合規檢查並修復所有問題。（草稿內含播種違規：Part 1 夾帶一條公式、[C-2] 缺適用條件、附錄 E 有一筆摘錄在 PDF 原文找不到對應頁、一個 $$ block 缺 \\tag。）",
+      "expected_output": "跑 pxa-standards 的 check_sp.py 取得違規清單並逐項修復：Part 1 公式移出（Part 1 禁公式禁引用）；[C-2] 補適用條件（缺適用條件禁止發行）；找不到原文對應的摘錄不得捏造頁碼——降級為定性陳述＋[來源待補] 標記；$$ 補 \\tag；重跑 check_sp.py 至 exit 0；依 STD-SP-002 §8.2 人審清單逐項回報；規則引用自 pxa-standards 正本（隨用隨讀）而非憑記憶。",
+      "files": [
+        "documents/report/ (含播種違規草稿)",
+        "obsidian/",
+        "source/ (PDF)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Report.md 已定稿並經使用者核准，請產出正式交付檔。",
+      "expected_output": "以 scripts/md2docx.py 轉出 docx（套 templates/SP-reference.docx 樣式；$$ 公式→OMML、式號保留、page-break 分頁、附錄 E 巢狀表提升、頭部 metadata 剝除）；轉出後以 soffice 產 pdf 預覽並抽查封面/任一公式頁/附錄 E 三頁版面；如有版面問題改模板或腳本後重轉、不手改 docx；交付 md＋docx（Draft 狀態）並聲明 MD 為 SSoT、內容修訂回 MD 端；DAA 審查簽核不主動接續。",
+      "files": [
+        "documents/report/ (定稿 md)",
+        "templates/SP-reference.docx"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "撰寫 Part 5（結論）。素材筆記中 2 則為 reviewed（尚未 stable），其中 1 則帶 ⚠ 標記（原文掃描不清、符號待確認）。",
+      "expected_output": "每條 [C-n] 三要素齊全（★＋適用條件＋限制）；★ 判定依 STD-SP-001 §5.2 的 vault status 對映——stable 上限 ★★、reviewed 只給 ★、帶 ⚠ 的筆記結論標 ⚠；不將 reviewed 筆記內容以 ✓ 或 ★★ 呈現；判定依據引用 pxa-standards 正本條文（可見引用），非憑記憶。",
+      "files": [
+        "obsidian/ (含 reviewed/⚠ 筆記)"
+      ]
+    }
+  ]
+}

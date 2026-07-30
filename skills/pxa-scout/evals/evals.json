@@ -1,0 +1,30 @@
+{
+  "skill_name": "pxa-scout",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "專案根目錄是 <PROJECT_ROOT>，obsidian/ vault 已有主題「薄壁截面剪力傳遞」的 MOC 與 3 篇 source notes（Grant 1992、Megson 2013 ch.17、Kollbrunner 1969）。MOC 待釐清節記載缺口：「缺 open-section shear lag 在實驗層級（L3 以上）的驗證文獻」。請以這 3 篇為種子做一輪滾雪球，產出候選清單。使用者目前不在線上：所有需要確認之處請做合理假設並記錄，不要停下等待回覆。",
+      "expected_output": "先產缺口陳述表（含種子清單、深度、上限預設值，標注未經確認）再執行；documents/lit-scout/ 產生候選表，欄位齊全（書目/DOI/引用鏈關係/補缺口理由/引用數/預測層級/OA 取得/佐證通道）；每筆候選有實際佐證通道（API 回傳或網頁），無憑記憶書目，查無 DOI 標 DOI:—；vault 既有 3 篇與其變體不出現在候選表；表末附建議收錄 top-N＋理由與放棄項一句話理由；到候選清單＋OA 連結為止，不建 source note。",
+      "files": [
+        "obsidian/ (含 3 篇 source notes 與 MOC)"
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "同上主題續跑。已知條件：種子之一《Kollbrunner 1969》查無 DOI；且本次為雲端 session，Semantic Scholar API 對共享出口 IP 持續回 429。請完成缺口探勘。",
+      "expected_output": "無 DOI 種子先以 resolve／標題解析嘗試，解析不到則標註後仍納入 keyword 通道，不放棄該種子；遇 429 退避 ≥60 秒後改換通道（WebFetch→WebSearch→Scholar），不高頻重試同一 endpoint；候選表「佐證通道」欄如實記錄每筆實際使用的通道；退避與換通道的過程在回報中可見。",
+      "files": [
+        "obsidian/ (同 eval 0)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "滾雪球 raw 結果共 60 筆，其中 12 筆為 vault 已收錄文獻（存在大小寫、副標題有無的差異變體）、8 筆與缺口相關性難以判定，候選上限 30。請完成篩選並交付候選表。",
+      "expected_output": "以 DOI＋正規化標題比對剔除全部 12 筆已收錄（含大小寫與副標差異變體），交付表零重複；8 筆不確定者標 ? 保留於表中交使用者裁定，不沉默丟棄；砍到 30 筆內時各放棄項附一句話理由；每筆預測層級標注依 STD-SP-001 §5.1 慣例（期刊/NASA TM-TP-CR→L2、講義→L3）並註明正式判定於 literature 建檔時。",
+      "files": [
+        "documents/lit-scout/raw.json (60 筆 mock)",
+        "obsidian/ (含既有 sources)"
+      ]
+    }
+  ]
+}
