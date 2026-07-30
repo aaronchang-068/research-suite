@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "research-suite",
-      "source": ".",
+      "source": "./",
       "description": "文獻探勘 → 研究整理 → 文件產出 一站式套件（pxa-scout / pxa-literature / pxa-scribe / pxa-standards）",
       "version": "1.0.0",
       "author": { "name": "Aaron Chang" }
