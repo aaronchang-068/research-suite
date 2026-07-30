@@ -36,8 +36,11 @@ Claude Code / Cowork **plugin marketplace**。內含文獻研究與標準寫作�
 
 ```
 .claude-plugin/
-  ├─ marketplace.json   ← marketplace 清單（列出 plugin 與其 skills 路徑）
+  ├─ marketplace.json   ← marketplace 清單（列出 plugin；不宣告 skills）
   └─ plugin.json        ← plugin 身分檔
-pxa-scout/  pxa-literature/  pxa-scribe/  pxa-standards/
-                        ← 各 skill（SKILL.md 就地）
+skills/                 ← plugin 安裝時自動探索此目錄下的每個 skill
+  ├─ pxa-scout/         （各含 SKILL.md）
+  ├─ pxa-literature/
+  ├─ pxa-scribe/
+  └─ pxa-standards/
 ```
