@@ -3,10 +3,10 @@ name: pxa-literature
 description: 文獻研究 SOP：將原始文獻（PDF/HTML）經 triage 略讀與逐篇深讀後，整理成 Obsidian 知識庫（source note → atomic note → MOC ＋ 跨文獻綜合比較），並以 MOC 為大綱產出工程文件草稿（.md → .docx/.pdf）。含批判性評估、文獻衝突處理、研究問題（RQ）驅動萃取與雙層 QA gate。凡使用者提到讀論文、整理文獻、文獻回顧、literature review、批判評估、方法比較、建立筆記庫/知識庫、source note、atomic note、MOC、把 PDF 整理進 Obsidian、從文獻產出工程文件或技術報告草稿——即使沒有明說「skill」——都應使用本 skill。範圍到工程文件草稿為止；後續應用（app、正式報告）不在本 skill 範圍。
 ---
 
-# literature — 文獻研究 SOP v3.1（階段一＋階段二）
+# literature — 文獻研究 SOP v3.2（階段一＋階段二）
 
 > 📊 本 skill 套件內附 `pipeline-flowchart.html`——整條 pipeline 的一頁式流程圖。第一次使用或向他人說明時，先開這張圖。
-> 📋 版本變更明細見 `CHANGELOG.md`（v3 逐項對應審查發現；v3.1 新增「工程實踐」）。
+> 📋 版本變更明細見 `CHANGELOG.md`（v3 逐項對應審查發現；v3.1 新增「工程實踐」；v3.2 新增 PDF 分流閘門與成本控制原則）。
 
 把「原始文獻 → 閱讀研究 → 筆記整理與交互對照 → 高品質知識庫 → 工程文件草稿」固化為團隊可複製的流程。核心精神：**每個陳述可追溯到來源頁碼、每個概念只有一個家、每份文獻經過批判評估、衝突不默默擇一、每個階段有驗證關卡（gate）、階段推進須經使用者確認。**
 
@@ -18,9 +18,10 @@ v3 的定位轉變：v2 保證「寫進 vault 的每個字可追溯且格式正�
 
 | 項目 | 用途 | 備註 |
 |------|------|------|
-| `python3` | 跑 QA 腳本 `scripts/check_vault.py` | 僅用標準庫，無需額外安裝 |
-| `pdftotext`（poppler）或 `pdfplumber` | 文字型 PDF 擷取（僅作文字草稿） | **公式轉寫不得只依賴文字層**，見「公式轉寫規則」 |
-| PDF 頁面渲染（pdf skill / `pdftoppm`） | 公式視覺核對 | 公式須對照頁面渲染影像逐條核對 |
+| `python3` | 跑 `scripts/check_vault.py`、`scripts/pdf_probe.py` | 僅用標準庫 |
+| `pdftotext`（poppler）或 `pdfplumber`／`pypdf` | PDF 分流閘門與文字型擷取 | `pdf_probe.py` 優先用 poppler，缺時回退 pypdf |
+| `pdf` skill（官方） | **掃描型／混合型 PDF 的 OCR** 分支執行者 | 分流閘門判定 scanned/hybrid 時委派它；無安裝則標記待人工 OCR |
+| PDF 頁面渲染（pdf skill / `pdftoppm`） | 公式視覺核對 | 只渲染**選定深讀章節內要轉寫公式的那幾頁**，非全文，見「公式轉寫規則」 |
 | `doc-coauthoring`／`docx`／`pdf` skill | 階段二產出與轉檔（選用） | 未安裝時階段二改走一般分節迭代、轉檔可略過 |
 
 **如何觸發**：把 PDF 放進 `source/`，用自然語言請 Claude 整理即可——例如「把 source/ 的文獻整理成 Obsidian 知識庫」「幫我做這批論文的文獻回顧」；描述命中即自動啟動，或直接點名 `literature` skill。
@@ -29,7 +30,7 @@ v3 的定位轉變：v2 保證「寫進 vault 的每個字可追溯且格式正�
 
 1. 建 `source/Paper/`，放 1–2 篇 PDF。
 2. 對 Claude 說：「用 literature skill 把 source/ 的文獻整理進 vault」。
-3. Claude 會依序：研究框架確認 → 盤點（跑 `check_vault.py` 反查未建檔）→ Pass 1 全批略讀 triage → Pass 2 逐篇深讀建 source note → 萃取原子筆記 → 建 MOC＋綜合層 → QA gate。
+3. Claude 會依序：研究框架確認 → 盤點（跑 `check_vault.py` 反查未建檔＋跑 `pdf_probe.py` 分流每份 PDF）→ Pass 1 全批略讀 triage → Pass 2 依分流路由逐篇深讀建 source note → 萃取原子筆記 → 建 MOC＋綜合層 → QA gate。
 4. **每階段結束會停下等你確認才續行**——這是刻意設計，不是卡住（無人值守模式見文末）。
 
 ## 資料夾慣例
@@ -57,6 +58,7 @@ skill 假設專案根目錄具備以下結構（缺少的資料夾在開始前�
 研究框架確認（主題＋研究問題 RQ＋工程決策需求）
    ↓
 階段一  source/ → obsidian/
+   盤點：check_vault 反查未建檔 ＋ pdf_probe 分流每份 PDF（text/hybrid/scanned＋large）
    Pass 1：全批略讀 → triage 表（seminal/derivative、關聯 RQ、分群、優先序）
    Pass 2：依群逐篇深讀 → source note（含批判評估＋涵蓋自評）
    → atomic note（交互對照＋衝突處理＋符號對映）
@@ -94,6 +96,23 @@ skill 假設專案根目錄具備以下結構（缺少的資料夾在開始前�
 
 盤點的機械化依據是 `scripts/check_vault.py <vault> --source-dir <source路徑>`：它會反向比對並列出「未建檔文獻」。任何時候執行本 skill，都要先跑一次此檢查作為盤點起點。
 
+**PDF 分流閘門（v3.2 新增，深讀前必跑）**：來源 PDF 的本質（文字型／掃描型）你無法事先掌握，而「該用文字層擷取還是渲染影像」是 token 成本差一個數量級的決策——不能交給模型臨場猜。開工前對整個 `source/` 跑一次：
+
+```
+python3 scripts/pdf_probe.py source/ --json obsidian/.pdf-manifest.json
+```
+
+它量測每份 PDF 的文字層覆蓋率，確定性地判定分類並輸出**強制路由**，Pass 1／Pass 2 一律依此路由讀取（不自行改路）：
+
+| 分類 | 判準 | 讀取路由 |
+|------|------|---------|
+| `text` | 文字層覆蓋 ≥ 0.85 | 文字層擷取（pdftotext/pdfplumber）；**不得整份渲染影像** |
+| `hybrid` | 0.15 < 覆蓋 < 0.85 | 有文字層頁走文字擷取；`image_pages` 清單交 `pdf` skill OCR 後併入 |
+| `scanned` | 文字層覆蓋 ≤ 0.15 | 整份委派 `pdf` skill 做 OCR → 產生文字層後再走文字擷取 |
+| 疊加 `large` | 頁數 > 200 | 先以目錄／章節定位，**只深讀 triage 選中章節**，勿整份深讀 |
+
+此閘門同時保品質（掃描件不會被當文字層擷取而產出亂碼）與控成本（影像渲染只發生在 OCR 與公式核對的必要頁）。manifest 的 `large` 檔案在 Pass 1 的「預估深讀範圍」欄一律標為特定章節。
+
 ### 2. Pass 1 — 全批略讀與 triage（v3 新增）
 
 **深讀之前，先用低成本掃過全部待處理文獻**（每篇只讀摘要、引言末段、結論、圖表標題），產出 **triage 表**：
@@ -105,13 +124,13 @@ skill 假設專案根目錄具備以下結構（缺少的資料夾在開始前�
 | 關聯 RQ | 對應哪幾條研究問題（可多條；無關聯者標記並建議降級或退回 scout） |
 | 分群 | 依子題聚類（如：控制律／致動器建模／驗證方法） |
 | 優先序 | 深讀順序：同群內 seminal → derivative；survey 最先讀（快速建圖） |
-| 預估深讀範圍 | 全文／特定章節（教科書 >200 頁必為特定章節） |
+| 預估深讀範圍 | 全文／特定章節（`pdf_probe` 標 `large`（>200 頁）者——不分教科書或 paper/thesis/report——一律鎖定特定章節，不深讀全文） |
 
 triage 表交使用者確認後才進 Pass 2。**深讀順序依 triage**，不依檔名排序——先讀奠基文獻，後讀延伸文獻，交互對照才有基準。
 
 ### 3. Pass 2 — 逐篇深讀 → source note（文獻筆記）
 
-每份文獻一則，存於 `sources/`，用 `templates/source-note.md` 模板。文字型 PDF 用 pdftotext／pdfplumber 擷取文字草稿；掃描型才考慮 OCR 或逐頁視覺閱讀。大型教科書依 triage 表鎖定章節精讀，並在筆記中註明涵蓋範圍。
+每份文獻一則，存於 `sources/`，用 `templates/source-note.md` 模板。**讀取路徑一律依 `pdf_probe` manifest 的分類**：`text` 走文字層擷取（pdftotext／pdfplumber）；`scanned` 先交 `pdf` skill OCR 得文字層再擷取；`hybrid` 文字頁走文字層、`image_pages` 交 OCR 併入——不因當下方便而改走整份影像渲染。`large` 檔（>200 頁，含 paper/thesis/report）依 triage 表鎖定章節精讀，並在筆記中註明涵蓋範圍。
 
 **命名**：`年份 作者 - 短標題.md`（如 `1971 MacNeal - Hybrid CMS.md`）；網路資源與講義可用 `來源 - 短標題.md`。
 
@@ -119,7 +138,7 @@ triage 表交使用者確認後才進 Pass 2。**深讀順序依 triage**，不�
 
 - frontmatter 必填：`type: source`、`authors`、`year`、`title`、`venue`（期刊/會議/出版社）、`bibkey`（如 `raveh1999trim`，供階段二與 scribe 產參考文獻）、`source_file`（指向 `source/` 內實際檔案的**相對路徑**，如 `source/Paper/x.pdf`）、`created`、`status: draft`、`verified: none`。選填但強烈建議：`doi`、`volume_pages`。
 - 「重點摘錄」每條**必須帶頁碼或章節錨點**，如 `（Eq.14-15, p.7-8）`、`（§III.B）`——此規則由 `check_vault.py` 機械檢查，無錨點視為 QA 失敗。
-- **公式轉寫規則（v3 強化）**：公式照原文轉寫為 LaTeX，特別注意正負號、下標與係數。**轉寫依據不得只有文字層擷取**——凡含數學式的頁面，須以頁面渲染影像視覺核對後才可寫入筆記；文字層（pdftotext）只作為初稿輔助。
+- **公式轉寫規則（v3 強化；v3.2 限縮渲染範圍）**：公式照原文轉寫為 LaTeX，特別注意正負號、下標與係數。**轉寫依據不得只有文字層擷取**——須以頁面渲染影像視覺核對後才可寫入筆記；文字層（pdftotext）只作為初稿輔助。但渲染影像**只針對「選定深讀章節內、當下實際要轉寫公式的那幾頁」**逐頁核對，**不得**為了找公式而整份或整章渲染成影像（那是 token 爆量的主因）。要轉哪條公式、才渲染那一頁。
 - **批判評估（v3 新增）**：每則 source note 必含「批判評估」一節，載明——
   - `evidence_level`（frontmatter 亦填）：`L1` 理論推導／`L2` 數值模擬／`L3` 實驗（風洞、HIL、台架）／`L4` 飛行測試。多層並存取最高層並註明範圍。
   - 方法有效性：假設是否合理、實驗/模擬設計是否支撐結論、樣本或案例是否足夠。
@@ -239,7 +258,7 @@ triage 表交使用者確認後才進 Pass 2。**深讀順序依 triage**，不�
 
 vault 建成後補入新文獻時（含 scout 取檔回流）：
 
-1. 新文獻走 Pass 1 定位（併入既有 triage 表）→ Pass 2 建 source note。
+1. 新文獻先跑 `pdf_probe`（可只對新檔）取得分流 → 走 Pass 1 定位（併入既有 triage 表）→ Pass 2 依路由建 source note。
 2. 觸及既有概念者，整合進**既有**原子筆記（不另建）；被修改的原子筆記依前述規則 status 降回 `draft`，並於筆記末「變更紀錄」一節追加一行：`日期｜併入 {bibkey}｜變更摘要`。新增歧異走衝突處理。
 3. 連動更新 MOC：索引、比較矩陣、SOTA、開放問題（已被新文獻回答的條目結案並註明出處）。
 4. 若該主題已有 `documents/` 產出：**不默默改文件**——在收尾回報中列出「文件受影響段落清單」（文件章節 ↔ 變更的筆記），由使用者決定是否改版文件。
@@ -258,3 +277,4 @@ vault 建成後補入新文獻時（含 scout 取檔回流）：
 3. **不確定就標註**：OCR 品質差、公式看不清、原文語意模糊時，在筆記中明確標記（如「⚠ 原文掃描不清，符號待確認」），不要猜。
 4. **語言慣例**：內文繁體中文，技術術語、法規名稱、變數符號保留英文原文。
 5. **簡潔回報**：進度與結果用表格，避免冗長敘述。
+6. **成本控制（v3.2 新增）**：token 是有限資源，讀取策略須刻意節制。硬規則——(a) 每份 PDF 先過 `pdf_probe` 分流，依 manifest 路由讀取，不自行改路；(b) 文字層優先，影像渲染是**例外**、只用於掃描件 OCR 與公式逐條核對的必要頁；(c) `large`（>200 頁）檔一律先章節定位再深讀，**絕不整份深讀或整份渲染影像**——單一大檔整份影像化即可燒掉一次額度。省 token 不是抄捷徑：分流與章節定位讓「該讀的精讀、不該讀的不碰」，品質與成本一起顧。

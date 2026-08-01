@@ -1,5 +1,20 @@
 # literature skill — CHANGELOG
 
+## v3.2（2026-08-01）
+
+導入 **PDF 分流閘門**——解決「來源 PDF 本質（文字型／掃描型）不可控，導致讀取路徑與 token 成本不一致」的問題。起因：一次對 600 頁 PDF 跑 literature，token 快速見底；根因是「文字層擷取 vs 影像渲染」交由模型臨場判斷，缺大檔章節鎖定，且公式視覺核對規則可能觸發全文渲染。
+
+| 項目 | 變更 | 落點 |
+|------|------|------|
+| PDF 分流閘門 | 新增 `scripts/pdf_probe.py`：量測每頁文字層覆蓋率，確定性判定 `text`／`hybrid`／`scanned`＋`large`（>200 頁）旗標，輸出強制路由 manifest。優先 poppler、回退 pypdf；OCR 分支**委派官方 `pdf` skill**，不內建 OCR | scripts/pdf_probe.py（新增） |
+| 前置閘門 | 盤點階段於 `check_vault` 之外加跑 `pdf_probe`，Pass 1／Pass 2 一律依 manifest 路由讀取，不自行改路 | SKILL.md §階段一-1、總流程、最小起步 |
+| 公式渲染限縮 | 公式視覺核對從「凡含數學式頁面」限縮為「選定深讀章節內、當下要轉寫公式的那幾頁」，禁止為找公式而整份／整章渲染影像 | SKILL.md §階段一-3、環境需求表 |
+| 大檔章節鎖定推廣 | triage「預估深讀範圍」的 >200 頁章節鎖定，從「教科書」推廣到 paper/thesis/report 等所有 `large` 檔 | SKILL.md §階段一-2/-3 |
+| 成本控制原則 | 品質原則新增第 6 條：分流路由、文字層優先、影像最小化、大檔絕不整份深讀／渲染 | SKILL.md §品質原則 |
+| 增量更新連動 | scout 回流新檔亦先過 `pdf_probe` 再走 Pass 1 | SKILL.md §增量更新 |
+
+設計原則：把高成本決策（文字 vs 影像）從模型裁量收回為機械判定——來源本質不論為何，讀取路徑固定、成本可預期；同時保品質（掃描件不再被當文字層擷取產出亂碼）。
+
 ## v3.1（2026-07-30）
 
 新增「工程實踐」章節（source note）——銜接文獻研究與工程實作（coding／Simulink modeling）。
