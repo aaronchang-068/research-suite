@@ -56,6 +56,19 @@
         border-radius:9px;padding:7px 14px;font-size:12.5px;text-align:center;line-height:1.4}
   .chip small{display:block;font-size:10.5px;color:#9db6d8}
   .chev{color:#7f9cc4;font-size:16px;padding:0 8px}
+  .mode{margin-top:22px;background:linear-gradient(135deg,var(--ice-soft),var(--ice));
+        border:1.5px solid var(--line);border-radius:14px;padding:14px 20px;
+        box-shadow:0 6px 18px rgba(74,111,165,.10)}
+  .m-head{display:flex;align-items:baseline;gap:12px;margin-bottom:11px;flex-wrap:wrap}
+  .m-head b{font-size:15px;color:var(--ink)}
+  .m-head .tag{font-size:11px;color:#fff;background:var(--steel);border-radius:20px;padding:2px 10px;font-weight:600}
+  .m-head small{color:var(--muted);font-size:12px}
+  .fchain{display:flex;align-items:stretch;gap:0;justify-content:space-between}
+  .fnode{background:#fff;border:1px solid var(--line);border-left:4px solid var(--steel);
+         border-radius:9px;padding:7px 12px;font-size:12.5px;line-height:1.45;flex:1}
+  .fnode small{display:block;color:var(--muted);font-size:11px;margin-top:1px}
+  .fnode.ok{background:var(--ok-bg);border-left-color:var(--ok)}
+  .fchev{display:flex;align-items:center;color:#7f9cc4;font-size:16px;padding:0 7px}
   footer{margin-top:12px;color:var(--muted);font-size:11px;display:flex;justify-content:space-between}
 </style>
 </head>
@@ -65,7 +78,7 @@
   <h1>scout skill｜文獻缺口探勘 Pipeline</h1>
   <span class="beta">SBE 團隊 SOP・literature 上游</span>
 </header>
-<div class="subtitle">議題缺口 → vault 種子滾雪球（refs／cited-by／similar／keyword）→ 去重候選表 → 使用者裁定收錄——取代人工翻 reference list＋Google Scholar 來回</div>
+<div class="subtitle">議題缺口 → vault 種子滾雪球（refs／cited-by／similar／keyword）→ 去重候選表 → 使用者裁定收錄——取代人工翻 reference list＋Google Scholar 來回。另含 figures 奠基者錨定模式（見下方帶）。資料來源 OpenAlex 優先。</div>
 
 <div class="pipe">
 
@@ -92,7 +105,7 @@
     <div class="col-body">
       <div class="node"><b>backward</b><small>種子的 reference list（引用了誰）</small></div>
       <div class="node"><b>forward</b><small>cited by（誰引用了種子）</small></div>
-      <div class="node"><b>similar</b><small>語意相似推薦（S2）</small></div>
+      <div class="node"><b>similar</b><small>語意相似推薦（OpenAlex related／S2）</small></div>
       <div class="node"><b>keyword</b><small>缺口關鍵字搜尋</small></div>
       <div class="down">▼</div>
       <div class="node ok"><b>snowball.py sweep</b><small>合併・vault 去重・命中鏈數排序 → raw.json＋草稿表</small></div>
@@ -108,8 +121,8 @@
   <div class="col">
     <div class="col-head" style="background:linear-gradient(135deg,#a8642f,#7a4a20)"><span class="stage">通道</span>資料來源（依序遞補）</div>
     <div class="col-body">
-      <div class="node"><b>① snowball.py 直連</b><small>S2＋OpenAlex＋Crossref API・本機 Cowork 主場景・S2_API_KEY 解限流</small></div>
-      <div class="node"><b>② WebFetch API</b><small>雲端 session・429 退避 ≥60s・失敗即換</small></div>
+      <div class="node"><b>① snowball.py 直連</b><small>OpenAlex 優先→S2→Crossref・本機 Cowork 主場景・S2_API_KEY 解 S2 限流</small></div>
+      <div class="node"><b>② WebFetch API</b><small>雲端 session・優先 OpenAlex URL・429 退避 ≥60s・失敗即換</small></div>
       <div class="node"><b>③ WebSearch</b><small>標題／關鍵字／arXiv／NTRS 逐筆組表</small></div>
       <div class="node"><b>④ claude-in-chrome</b><small>使用者瀏覽器開 Google Scholar cited-by 頁</small></div>
       <div class="gate"><b>每筆候選標註佐證通道</b><small style="color:#9a6a3f">禁止憑記憶造書目</small></div>
@@ -152,6 +165,27 @@
 
 </div>
 
+<div class="mode">
+  <div class="m-head">
+    <b>🏛 奠基者／代表人物錨定模式</b>
+    <span class="tag">figures・按需</span>
+    <small>問「這領域有哪些大師／開山始祖／必引經典」時觸發——與缺口探勘平行的獨立模式，方法＝共被引（co-citation）</small>
+  </div>
+  <div class="fchain">
+    <div class="fnode"><b>種子 refs（OpenAlex）</b><small>逐種子取 referenced_works</small></div>
+    <div class="fchev">→</div>
+    <div class="fnode"><b>共被引計數</b><small>每份參考作被幾份種子共同引用</small></div>
+    <div class="fchev">→</div>
+    <div class="fnode"><b>高門檻篩選</b><small>≥ 半數種子共引才留（寧可漏、少而精）</small></div>
+    <div class="fchev">→</div>
+    <div class="fnode"><b>上捲作者</b><small>survivors → 作者 breadth＋代表作</small></div>
+    <div class="fchev">→</div>
+    <div class="fnode ok"><b>figures.md 奠基者候選表</b><small>人物／代表作／共引／被引／年份／vault／OA</small></div>
+    <div class="fchev">→</div>
+    <div class="fnode"><b>建議納入引用</b><small>缺 vault 者列建議；事實／推估／假設分層，不腦補</small></div>
+  </div>
+</div>
+
 <div class="trace">
   <div class="t-title">🔗 探勘位置<br>於整條 pipeline<small>缺口 → 候選 → vault → SP</small></div>
   <div class="chain">
@@ -168,7 +202,7 @@
 </div>
 
 <footer>
-  <span>scout skill v1｜方法學：systematic snowballing｜去重基準：obsidian/sources（DOI＋正規化標題）</span>
+  <span>scout skill v1.1｜方法學：systematic snowballing＋co-citation 奠基者錨定｜資料來源：OpenAlex 優先｜去重基準：obsidian/sources（DOI＋正規化標題）</span>
   <span>research-suite</span>
 </footer>
 

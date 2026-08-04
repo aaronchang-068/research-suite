@@ -25,6 +25,14 @@
         "documents/lit-scout/raw.json (60 筆 mock)",
         "obsidian/ (含既有 sources)"
       ]
+    },
+    {
+      "id": 3,
+      "prompt": "同主題「薄壁截面剪力傳遞」，種子為 vault 內 3 篇 source notes。除了找補缺口文獻，也幫我錨定這個領域有哪些開山始祖／大師級人物，並建議我哪些經典應該納入引用。使用者不在線上，需確認處做合理假設並記錄。",
+      "expected_output": "走 figures 奠基者錨定模式（snowball.py figures），以共被引為訊號、高門檻（≥ 半數種子）篩代表作並上捲作者；產出奠基者候選表（人物／代表作／共引種子數／被引／最早年／vault 狀態／OA）；判定分層正確——共引數/被引/年份標為事實、『X 為奠基者』標為推估並附證據、無數據佐證的『領域大師』標為假設待查證，不得當事實；缺 vault 的奠基者代表作列入建議納入引用＋一句理由，已收錄者標✓；未憑記憶捏造人物或書目；到候選＋建議為止，不建 source note。若 OpenAlex 無法連線則明確報錯並導引改本機 Cowork 或人工通道，不偽造名單。",
+      "files": [
+        "obsidian/ (含 3 篇 source notes 與 MOC)"
+      ]
     }
   ]
 }
