@@ -1,6 +1,7 @@
 ---
 name: pxa-scribe
 description: 從 obsidian 知識庫（Obsidian vault）產出合規的 PXA SP（研究）技術報告——NASA CR 風格完整研究報告，遵循 pxa-standards skill 收錄之 PXA-STD-SP-001/002/003 標準體系。凡使用者提到寫 SP、技術報告、研究報告、scribe、PXA-STRUCT-SP、Report.md、把 vault/筆記庫寫成報告、階段二工程文件——即使沒有明說 skill 名稱——都應使用本 skill。範圍到 Report.md 定稿＋docx 正式交付檔為止（含確定性 MD→docx 轉換）；審查簽核（DAA）不在本 skill 範圍。
+argument-hint: "[選填：SP 主題或編號，如 PXA-STRUCT-SP-2026-002、續寫 Part 4]"
 ---
 
 # scribe — 從 vault 產出 PXA SP（研究）報告

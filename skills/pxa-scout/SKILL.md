@@ -1,6 +1,7 @@
 ---
 name: pxa-scout
 description: 文獻缺口探勘——當 vault（obsidian 知識庫）對某議題涵蓋不足時，以引用鏈滾雪球（seed 文獻的 backward references／forward citations／相似推薦／關鍵字搜尋）系統性尋找候選文獻，自動去重 vault 既有收錄，產出候選清單供使用者裁定收錄。另含「奠基者／代表人物錨定」模式（figures）：以共被引訊號找出該主題的開山始祖／大師級人物與其代表作，建議納入引用。取代人工「翻 reference list＋Google Scholar 來回搜尋」。凡使用者提到找文獻、補文獻、文獻缺口、相關文獻、引用鏈、cited by、snowball、找 paper、reference 追蹤、Google Scholar 搜尋、誰是這領域的大師／開山始祖／奠基者／權威、代表人物、pioneer、seminal work、founding figure、經典必引文獻——即使沒有明說 skill 名稱——都應使用本 skill。範圍到候選清單＋OA 取得協助為止；收錄建檔（source note）屬 literature skill。
+argument-hint: "[選填：缺口陳述，如 002 缺 shear lag 實驗文獻；或 figures＝奠基者錨定]"
 ---
 
 # scout — 文獻缺口探勘（引用鏈滾雪球）v1.1

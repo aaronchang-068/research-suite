@@ -1,6 +1,7 @@
 ---
 name: pxa-standards
 description: PXA 技術報告標準體系的規則 SSoT——收錄 PXA-STD-SP-001（治理標準）與 PXA-STD-SP-002（結構與格式標準）正本、寫作範例集、合規檢查腳本 check_sp.py 與上位標準原文。凡涉及 PXA 技術報告的規則查詢、格式判定、STRN 編號、審查等級、文獻層級（L1/L2/L3）、信度標記（★）、[C-n] 結論格式、前頁模板、合規檢查、標準修訂——即使沒有明說 skill 名稱——都應使用本 skill。本 skill 只定義規則（What/Why），不定義執行流程（How）——撰寫流程屬 scribe skill、文獻建庫屬 literature skill。
+argument-hint: "[選填：規則查詢，如 STRN 格式、L2 判定、[C-n] 要素、跑 check_sp]"
 ---
 
 # pxa-standards — PXA 技術報告標準體系（規則 SSoT）

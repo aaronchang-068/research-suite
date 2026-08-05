@@ -1,6 +1,7 @@
 ---
 name: pxa-literature
 description: 文獻研究 SOP：將原始文獻（PDF/HTML）經 triage 略讀與逐篇深讀後，整理成 Obsidian 知識庫（source note → atomic note → MOC ＋ 跨文獻綜合比較），並以 MOC 為大綱產出工程文件草稿（.md → .docx/.pdf）。含批判性評估、文獻衝突處理、研究問題（RQ）驅動萃取與雙層 QA gate。凡使用者提到讀論文、整理文獻、文獻回顧、literature review、批判評估、方法比較、建立筆記庫/知識庫、source note、atomic note、MOC、把 PDF 整理進 Obsidian、從文獻產出工程文件或技術報告草稿——即使沒有明說「skill」——都應使用本 skill。範圍到工程文件草稿為止；後續應用（app、正式報告）不在本 skill 範圍。
+argument-hint: "[選填：source/ 路徑或指示，如 source/Paper、僅盤點不深讀、無人值守模式]"
 ---
 
 # literature — 文獻研究 SOP v3.2（階段一＋階段二）
