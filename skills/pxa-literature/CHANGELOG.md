@@ -1,5 +1,9 @@
 # literature skill — CHANGELOG
 
+## v3.2.1（2026-08-06）
+
+修 bug：執行本 skill 時，`check_vault.py` 會被複製到使用者專案根（含 QA 輸出落地 vault_report.txt）。根因＝SKILL.md 指令用相對路徑 `scripts/…`，session cwd 在專案根、路徑不存在，模型遂「重建」腳本進專案。修法：新增「腳本執行慣例」——腳本一律 `python3 <skill根>/scripts/…` 從 skill 自身目錄執行、禁止複製進專案；QA 結果以對話回報、不落地專案根。全部指令範例同步改 `<skill根>` 前綴。（scout／scribe／standards 同型問題同批修正。）
+
 ## v3.2（2026-08-01）
 
 導入 **PDF 分流閘門**——解決「來源 PDF 本質（文字型／掃描型）不可控，導致讀取路徑與 token 成本不一致」的問題。起因：一次對 600 頁 PDF 跑 literature，token 快速見底；根因是「文字層擷取 vs 影像渲染」交由模型臨場判斷，缺大檔章節鎖定，且公式視覺核對規則可能觸發全文渲染。

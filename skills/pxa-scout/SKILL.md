@@ -28,6 +28,8 @@ vault 種子文獻 ──┬─ backward（種子引用了誰＝reference list�
 | 3 | WebSearch | 任何有網路的 session | 關鍵字／標題／「"標題" cited」搜尋，找 arXiv、期刊頁、NTRS；逐筆人工組表 |
 | 4 | claude-in-chrome 開 Google Scholar | 使用者桌面連線時 | 用使用者自己的瀏覽器開 seed 的 Scholar 頁 →「被引用次數」頁；最接近人工流程、不受共享 IP 限流 |
 
+> **腳本執行慣例**：`snowball.py` 住在 skill 自身目錄（載入時系統告知的 base directory，下文以 `<skill根>` 代稱），一律 `python3 <skill根>/scripts/snowball.py …` 執行，**禁止複製進使用者專案**；工作檔（seeds.txt、raw.json）放 `documents/lit-scout/`，不落專案根。
+
 ## 執行流程
 
 ### 0. 缺口確認（動筆前交使用者核准）
@@ -42,7 +44,7 @@ vault 種子文獻 ──┬─ backward（種子引用了誰＝reference list�
 ### 2. 滾雪球
 
 ```
-python3 scripts/snowball.py sweep --seeds seeds.txt --vault obsidian/sources \
+python3 <skill根>/scripts/snowball.py sweep --seeds seeds.txt --vault obsidian/sources \
     --query "<缺口關鍵字>" --out documents/lit-scout/{議題}-raw.json
 ```
 
@@ -76,7 +78,7 @@ python3 scripts/snowball.py sweep --seeds seeds.txt --vault obsidian/sources \
 **方法＝共被引（co-citation）**：一個領域的奠基者，特徵是**你手上多數種子文獻的參考清單都反覆引用他**。把「一份參考作被幾份種子共同引用」當奠基訊號，高門檻（預設 ≥ 半數種子）篩出反覆被奠基引用的代表作，再上捲到作者——這比單看「絕對高被引」更能分辨「奠基者」與「當紅但非奠基」。
 
 ```
-python3 scripts/snowball.py figures --seeds seeds.txt --vault obsidian/sources \
+python3 <skill根>/scripts/snowball.py figures --seeds seeds.txt --vault obsidian/sources \
     --top 8 --out documents/lit-scout/{議題}-figures.json
 ```
 

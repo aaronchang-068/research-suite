@@ -41,8 +41,10 @@ argument-hint: "[選填：規則查詢，如 STRN 格式、L2 判定、[C-n] 要
 ## 合規 gate
 
 ```
-python3 scripts/check_sp.py <Report.md>
+python3 <skill根>/scripts/check_sp.py <Report.md>
 ```
+
+> 腳本從本 skill 自身目錄（載入時系統告知的 base directory）執行，**禁止複製進使用者專案**。
 
 檢查 SP-002 §8.1 全部 [S] 項；L2 計數僅回報（協調制）。結束碼 0＝全過。**凡 [S] 規則以腳本結果為準——不必逐條人工覆核；[H] 項（敘事品質、技術正確性）依 SP-002 §8.2 人審。**
 

@@ -1,5 +1,9 @@
 # scout skill — CHANGELOG
 
+## v1.1.1（2026-08-06）
+
+腳本執行慣例：`snowball.py` 一律 `python3 <skill根>/scripts/…` 從 skill 自身目錄執行、禁止複製進使用者專案；工作檔（seeds.txt、raw.json）放 `documents/lit-scout/`。（修 literature 回報的「腳本滲入專案根」同型問題。）
+
 ## v1.1（2026-08-01）
 
 兩項變更：修可靠度（OpenAlex lane）＋新增奠基者錨定（figures）。

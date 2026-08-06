@@ -65,15 +65,17 @@ argument-hint: "[選填：SP 主題或編號，如 PXA-STRUCT-SP-2026-002、續�
 
 ### 3. 合規 gate（交付前）
 
-1. 執行 pxa-standards skill 的 `scripts/check_sp.py <Report.md>`：結構不可變、[C-n] 三要素、公式三行格式、page-break 位置、禁止用語、Part 1 淨空、metadata 一致性——全過才可交付。
+1. 執行 pxa-standards skill 的 `check_sp.py`（從該 skill 自身目錄執行：`python3 <pxa-standards根>/scripts/check_sp.py <Report.md>`，不複製進專案）：結構不可變、[C-n] 三要素、公式三行格式、page-break 位置、禁止用語、Part 1 淨空、metadata 一致性——全過才可交付。
 2. 跑 STD-SP-002 §8.2 人審清單，逐項回報。
 3. 抽驗：附錄 E 至少 20% 摘錄回 PDF 原文比對逐字一致。
 
 ### 4. docx 正式交付檔（依 STD-SP-001 §2.6）
 
 ```
-python3 scripts/md2docx.py documents/report/{STRN}.md
+python3 <skill根>/scripts/md2docx.py documents/report/{STRN}.md
 ```
+
+> **腳本執行慣例**：`md2docx.py`／`build_reference.py` 與範本住在本 skill 自身目錄（載入時系統告知的 base directory，`<skill根>`），一律從該處執行與取用，**禁止複製進使用者專案**。
 
 - 範本：`templates/SP-reference.docx`（正黑＋Times New Roman、A4、頁首 STRN、頁尾頁碼、表格/標題/callout 樣式）。腳本自動處理：`$$` 公式→Word 原生方程式（OMML）、`\tag` 式號保留為式尾 `(X-Y)`、page-break div→分頁、`[!NOTE]` 等 callout→樣式區塊、附錄 E 巢狀表提升、MD 頭部 metadata 剝除（docx 自封面起始）。
 - 轉出後以 `soffice --headless --convert-to pdf` 產預覽，**抽查封面、任一公式頁、附錄 E** 三頁版面無誤才交付。

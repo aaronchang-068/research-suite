@@ -25,6 +25,8 @@ v3 的定位轉變：v2 保證「寫進 vault 的每個字可追溯且格式正�
 | PDF 頁面渲染（pdf skill / `pdftoppm`） | 公式視覺核對 | 只渲染**選定深讀章節內要轉寫公式的那幾頁**，非全文，見「公式轉寫規則」 |
 | `doc-coauthoring`／`docx`／`pdf` skill | 階段二產出與轉檔（選用） | 未安裝時階段二改走一般分節迭代、轉檔可略過 |
 
+**腳本執行慣例（重要）**：本 skill 的腳本（`check_vault.py`、`pdf_probe.py`）住在 **skill 自身目錄**（載入本 skill 時系統告知的 base directory，下文以 `<skill根>` 代稱）。執行時一律用完整路徑 `python3 <skill根>/scripts/xxx.py …`，**禁止把腳本複製進使用者的專案資料夾**——專案資料夾是使用者的研究資料，skill 工具檔滲進去會污染 repo 與 Obsidian vault（曾實際發生：專案根莫名多出 check_vault.py）。同理，QA 結果以對話表格回報即可，**勿在專案根落地 vault_report.txt 之類的輸出檔**；確需留檔時放 `obsidian/.qa/` 並先告知使用者。
+
 **如何觸發**：把 PDF 放進 `source/`，用自然語言請 Claude 整理即可——例如「把 source/ 的文獻整理成 Obsidian 知識庫」「幫我做這批論文的文獻回顧」；描述命中即自動啟動，或直接點名 `literature` skill。
 
 **最小起步**：
@@ -95,12 +97,12 @@ skill 假設專案根目錄具備以下結構（缺少的資料夾在開始前�
 
 列出 `source/` 內全部文獻，與 `obsidian/sources/` 現有筆記比對，產出「待處理清單」表格（含檔名、類型、大小、是否已有筆記）。已有筆記的文獻不重做，除非使用者要求。
 
-盤點的機械化依據是 `scripts/check_vault.py <vault> --source-dir <source路徑>`：它會反向比對並列出「未建檔文獻」。任何時候執行本 skill，都要先跑一次此檢查作為盤點起點。
+盤點的機械化依據是 `python3 <skill根>/scripts/check_vault.py <vault> --source-dir <source路徑>`（腳本從 skill 目錄執行，不複製進專案）：它會反向比對並列出「未建檔文獻」。任何時候執行本 skill，都要先跑一次此檢查作為盤點起點。
 
 **PDF 分流閘門（v3.2 新增，深讀前必跑）**：來源 PDF 的本質（文字型／掃描型）你無法事先掌握，而「該用文字層擷取還是渲染影像」是 token 成本差一個數量級的決策——不能交給模型臨場猜。開工前對整個 `source/` 跑一次：
 
 ```
-python3 scripts/pdf_probe.py source/ --json obsidian/.pdf-manifest.json
+python3 <skill根>/scripts/pdf_probe.py source/ --json obsidian/.pdf-manifest.json
 ```
 
 它量測每份 PDF 的文字層覆蓋率，確定性地判定分類並輸出**強制路由**，Pass 1／Pass 2 一律依此路由讀取（不自行改路）：
@@ -193,7 +195,7 @@ triage 表交使用者確認後才進 Pass 2。**深讀順序依 triage**，不�
 
 ### 6. QA gate（結構＋內容雙重驗證）
 
-**結構驗證**——執行 `scripts/check_vault.py <vault路徑> --source-dir <source路徑>`，錯誤（error）須全數清零，警告（warning）逐條判讀後回報：
+**結構驗證**——執行 `python3 <skill根>/scripts/check_vault.py <vault路徑> --source-dir <source路徑>`，錯誤（error）須全數清零，警告（warning）逐條判讀後回報：
 
 | 檢查項 | 標準 |
 |--------|------|
